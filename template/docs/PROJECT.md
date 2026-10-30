@@ -26,6 +26,8 @@ hal khusus tiap aplikasi ada di `apps/<app>/APP.md`.
 <!-- [/multi-app] -->
 
 ## 2. Stack & konvensi kode
+- **Jenis & cara QA:** <!-- ui | data | api; cara uji khusus proyek ini --> (`QA.md` §2) <!-- [single-app] -->
+- **Jenis & cara QA:** per aplikasi di `apps/<app>/APP.md` §2 (`QA.md` §2) <!-- [multi-app] -->
 - <!-- framework, bahasa, template UI -->
 - Konvensi kode & aturan domain: <!-- file, mis. SKILL.md -->
 - Pemakaian template UI: `uiux/STANDAR-UI.md`.
@@ -62,3 +64,21 @@ Peran: <!-- daftar peran, urutan ini dipakai untuk kolom matriks peran × aksi d
 ## 6. Luaran
 - **Software:** <!-- -->
 - **Publikasi** (`publications/`): <!-- atau "tidak ada" -->
+
+## 7. Data
+| | |
+|---|---|
+| Data mentah (RAW) | <!-- lokasi di luar git, ukuran, cara mendapatkan; "tidak ada" bila bukan proyek data --> |
+| Data antara / matang | <!-- lokasi, format, siapa yang memakai --> |
+| Dataset uji tetap | <!-- path (kecil, boleh di git), versi/hash; mengganti dataset uji = decision baru --> |
+| Baseline metrik | <!-- publications/_bukti/H<nnn>/metrik.md terakhir yang LULUS --> |
+
+**Dilarang commit:** data RAW, data besar, kredensial. Pastikan `.gitignore` memuatnya sebelum commit pertama.
+
+## 8. Kontrak antar aplikasi
+| Kontrak | Produsen | Konsumen | Berkas skema | Test |
+|---|---|---|---|---|
+| | | | <!-- mis. contracts/… --> | |
+
+Perubahan kontrak dikerjakan dalam **satu** handoff yang menyentuh produsen dan konsumen (`app: [produsen, konsumen]`),
+termasuk memperbarui berkas skema dan test konsumennya.

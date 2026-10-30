@@ -24,18 +24,24 @@ branch: <branch PR yang diuji>
 |---|---|
 | K1 | |
 
-## Matriks peran × aksi
+## Matriks peran × aksi (aplikasi `ui`/`api`; hapus bila tidak relevan)
 <!-- Kolom = peran aplikasi di docs/PROJECT.md §5, dengan urutan yang sama. -->
 | Aksi | <peran 1> | <peran 2> | <peran 3> | … |
 |---|---|---|---|---|
 | | ✅ | ✅ | 403 | |
 
+## Data uji & metrik (aplikasi `data`; hapus bila tidak relevan)
+<!-- Dataset uji (versi/hash), metrik yang dihitung, baseline terakhir + commit-nya, toleransi penurunan, jumlah sampel manual. -->
+| Metrik | Baseline (commit) | Toleransi |
+|---|---|---|
+| | | |
+
 ## Regresi
 <!-- Modul/halaman lain yang bisa terdampak. -->
 -
 
-## Responsif & screenshot bukti
-<!-- Halaman yang wajib dicek di 360/768/1280 dan disimpan ke publications/_bukti/H000/ bila LULUS. -->
+## Responsif & bukti
+<!-- ui: halaman yang wajib dicek di 360/768/1280; data: metrik.md. Disimpan ke publications/_bukti/H000/ bila LULUS. -->
 -
 
 ## Di luar cakupan uji

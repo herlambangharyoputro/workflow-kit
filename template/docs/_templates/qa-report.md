@@ -26,6 +26,12 @@ tests: "<n> lulus / <n> gagal (<database>)"
 |---|---|---|---|---|
 | | | | | |
 
+### Data & metrik
+<!-- Aplikasi data: validasi skema (lulus/gagal, jumlah baris), metrik vs baseline, sampel manual, uji ulang. Hapus bila tidak relevan. -->
+| Metrik | Baseline | Sekarang | Selisih | Status |
+|---|---|---|---|---|
+| | | | | |
+
 ### Responsif
 | Halaman | 360 | 768 | 1280 | Catatan |
 |---|---|---|---|---|

@@ -34,10 +34,11 @@ Sesi yang mengubah alur kerja itu sendiri adalah **Arsitek** (`docs/ARSITEK.md`)
 | Jenis pekerjaan | Model | Effort |
 |---|---|---|
 | Skema DB, otorisasi/izin, migrasi data, desain API komponen, keputusan ambigu | kelas Opus | high |
+| Model/pipeline NLP, perubahan kontrak data antar aplikasi, desain evaluasi (metrik, dataset uji) | kelas Opus | high |
 | Fitur/CRUD/UI yang mengikuti pola yang sudah ada | kelas Sonnet | medium |
 | Teks, panduan, seed demo, migrasi view mekanis ke komponen standar | kelas Haiku atau Sonnet | low |
 | QA biasa | kelas Sonnet | medium |
-| QA untuk otorisasi, migrasi data, atau rilis | kelas Opus | high |
+| QA untuk otorisasi, migrasi data, rilis, atau evaluasi model/pipeline | kelas Opus | high |
 | Lead (brainstorming, review, menulis publikasi) | kelas Opus | high |
 
 ## 3. Review laporan developer (`dev-reports/H<nnn>_report.md`)

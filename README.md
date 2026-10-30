@@ -22,6 +22,12 @@ Claude Code, dengan luaran publikasi bila ada. Lahir dan diuji di proyek SIMANTA
 - **Register asumsi** (`docs/requirements/ASUMSI.md`) untuk hal yang belum pasti dari mitra.
 - Peta lengkap: `template/docs/README.md`.
 
+## Jenis aplikasi
+Cara QA dan Definition of Done mengikuti jenis aplikasi yang dicatat di `PROJECT.md` §2 / `APP.md` §2:
+`ui` (matriks peran, responsif 360/768/1280, standar UI), `data` (validasi skema keluaran, metrik dataset uji vs baseline,
+sampel manual, dapat diulang, data RAW tidak di-commit), `api` (kontrak endpoint, otorisasi). Kontrak antar aplikasi
+(`PROJECT.md` §8) diuji di semua jenis.
+
 ## Mode
 | Mode | Kapan | Bedanya |
 |---|---|---|

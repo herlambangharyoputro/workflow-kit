@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0] — 2026-10-30
+### Ditambahkan
+- **Jenis aplikasi `ui` / `data` / `api`** (`PROJECT.md` §2, `APP.md` §2): `QA.md` §2 dipecah per jenis — `data` menguji validasi
+  skema keluaran, metrik dataset uji vs baseline + toleransi, sampel manual, dapat diulang, dan kebocoran data ke git; `api` menguji
+  kontrak endpoint & otorisasi. Kontrak antar aplikasi diuji di semua jenis.
+- `PROJECT.md` §7 **Data** (RAW di luar git, data matang, dataset uji tetap, baseline metrik) dan §8 **Kontrak antar aplikasi**
+  (produsen, konsumen, berkas skema, test; perubahan kontrak = satu handoff produsen+konsumen).
+- Template QA handoff/laporan: bagian Data uji & metrik; bukti `data` = `metrik.md`/`.csv` di `publications/_bukti/`.
+- DoD dibedakan per jenis; rubrik model: pipeline/NLP/kontrak data/desain evaluasi → kelas Opus high.
+### Pelajaran
+- indoskillmap (NLP → Agregator → Web): aturan kit sebelumnya hanya cocok untuk aplikasi web.
+
 ## [0.2.0] — 2026-10-30
 ### Ditambahkan
 - **Mode migrasi** (`--migrasi` / `-Migrasi`) untuk proyek yang sudah punya alur kerja lama: syarat `docs-old/` (hasil `git mv docs docs-old`),

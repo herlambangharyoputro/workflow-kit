@@ -26,11 +26,12 @@ lalu menulis laporan untuk Lead. Perintah, lingkungan, database yang didukung, d
 ## 3. Definition of Done (berlaku untuk setiap handoff kode)
 1. Semua kriteria selesai di handoff terpenuhi; yang tidak terpenuhi disebut jujur di laporan.
 2. Suite test lulus. Bila skema berubah: lulus di semua database yang didukung (`docs/PROJECT.md` §4).
-3. Setiap rute/aksi baru punya test otorisasi: positif untuk peran yang berhak, **403** untuk yang tidak.
+3. Setiap rute/aksi/endpoint baru punya test otorisasi: positif untuk peran yang berhak, **403** untuk yang tidak.
 4. Bila ada migrasi skema: idempotent dan bisa di-rollback; tidak menimpa data yang sudah diubah pengguna.
-5. UI mengikuti `docs/uiux/STANDAR-UI.md`: komponen template UI proyek, tanpa style inline baru untuk layout,
-   tanpa scroll horizontal halaman di lebar 360px.
-6. Fitur yang terlihat pengguna: panduan pengguna di aplikasi diperbarui (sumbernya di `docs/PROJECT.md` §2).
+5. Aplikasi `ui`: UI mengikuti `docs/uiux/STANDAR-UI.md` (komponen template UI proyek, tanpa style inline baru untuk layout,
+   tanpa scroll horizontal halaman di lebar 360px); fitur yang terlihat pengguna → panduan pengguna diperbarui.
+6. Aplikasi `data`: keluaran sesuai kontrak; perubahan kontrak memperbarui berkas kontrak **dan** test konsumennya dalam
+   handoff yang sama; metrik dataset uji dilaporkan (sebelum/sesudah) di laporan; data RAW/besar tidak di-commit.
 7. Tidak ada perubahan di luar lingkup, rahasia, atau file sementara yang ikut ter-commit.
 8. Laporan `docs/dev-reports/H<nnn>_report.md` ditulis, di-commit, dan branch di-push (push pertama: `git push -u origin <branch>` —
    branch item tidak boleh mengikuti `origin/main`).

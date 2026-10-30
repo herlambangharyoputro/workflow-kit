@@ -21,7 +21,8 @@ Dokumen kerja **Lead** untuk memindahkan alur kerja lama ke kaidah workflow-kit 
 
 ## 3. Langkah
 1. **Inventaris.** Daftar semua id di `docs-old/` ke tabel Peta (§4) dengan status lamanya. Cek `git status` bersih.
-2. **Profil.** Isi `PROJECT.md` (repo, stack, perintah test, lingkungan, larangan DB kerja) dan `apps/<app>/APP.md` dari bahan v1/v2.
+2. **Profil.** Isi `PROJECT.md` (repo, stack, jenis & cara QA, perintah test, lingkungan, larangan DB kerja, §7 Data, §8 Kontrak —
+   mis. folder `contracts/` yang sudah ada) dan `apps/<app>/APP.md` dari bahan v1/v2.
    Dokumen hidup di root yang masih dipakai (mis. kontrak API, skema DB) boleh tetap di tempatnya — sebut di `PROJECT.md` §2.
 3. **Id berikutnya.** Tetapkan di `INDEX.md`: item kerja = main lama tertinggi + 1; asumsi mulai `A-001`.
 4. **Decision yang masih berlaku** → satu decision rangkuman `D-H000-03` "Keputusan yang dibawa dari alur kerja lama" (daftar ringkas:
