@@ -26,7 +26,7 @@ if git -C "$ROOT" show-ref -q --verify "refs/remotes/origin/$BRANCH"; then
   git -C "$ROOT" worktree add -B "$BRANCH" "$WT" "origin/$BRANCH"
 else
   echo "Branch $BRANCH belum ada di origin — dibuat dari origin/main."
-  git -C "$ROOT" worktree add -b "$BRANCH" "$WT" origin/main
+  git -C "$ROOT" worktree add --no-track -b "$BRANCH" "$WT" origin/main
 fi
 
 if [ -f "$ROOT/.worktree-copy" ]; then
@@ -40,5 +40,6 @@ fi
 
 echo
 echo "Worktree siap: $WT (branch $BRANCH)"
+echo "Push pertama dari worktree ini: git push -u origin $BRANCH"
 echo "Saran untuk QA: DB qa_$ID, port 8$NNN — lihat docs/PROJECT.md §4."
 echo "Hapus setelah item ditutup: git worktree remove --force \"$WT\" && git branch -D $BRANCH"

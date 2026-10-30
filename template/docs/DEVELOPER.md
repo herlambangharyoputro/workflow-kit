@@ -32,7 +32,8 @@ lalu menulis laporan untuk Lead. Perintah, lingkungan, database yang didukung, d
    tanpa scroll horizontal halaman di lebar 360px.
 6. Fitur yang terlihat pengguna: panduan pengguna di aplikasi diperbarui (sumbernya di `docs/PROJECT.md` §2).
 7. Tidak ada perubahan di luar lingkup, rahasia, atau file sementara yang ikut ter-commit.
-8. Laporan `docs/dev-reports/H<nnn>_report.md` ditulis, di-commit, dan branch di-push.
+8. Laporan `docs/dev-reports/H<nnn>_report.md` ditulis, di-commit, dan branch di-push (push pertama: `git push -u origin <branch>` —
+   branch item tidak boleh mengikuti `origin/main`).
 
 ## 4. Laporan
 Tulis `docs/dev-reports/H<nnn>_report.md` dari `docs/_templates/dev-report.md`. Ringkas: detail teknis panjang

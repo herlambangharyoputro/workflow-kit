@@ -34,7 +34,7 @@ if ($LASTEXITCODE -eq 0) {
   git -C $Root worktree add -B $Branch $Wt "origin/$Branch"
 } else {
   Write-Host "Branch $Branch belum ada di origin; dibuat dari origin/main."
-  git -C $Root worktree add -b $Branch $Wt origin/main
+  git -C $Root worktree add --no-track -b $Branch $Wt origin/main
 }
 if ($LASTEXITCODE -ne 0) { throw 'git worktree add gagal.' }
 
@@ -57,5 +57,6 @@ if (Test-Path $daftar) {
 
 Write-Host ''
 Write-Host "Worktree siap: $Wt (branch $Branch)"
+Write-Host "Push pertama dari worktree ini: git push -u origin $Branch"
 Write-Host "Saran untuk QA: DB qa_$Id, port 8$Nnn (lihat docs\PROJECT.md bagian 4)."
 Write-Host "Hapus setelah item ditutup: git worktree remove --force `"$Wt`"; git branch -D $Branch"

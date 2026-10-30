@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2] — 2026-10-30
+### Diperbaiki
+- `new-worktree`: branch item baru dibuat dengan `--no-track`. Sebelumnya branch mengikuti `origin/main`, sehingga `git push`
+  biasa ditolak atau — dengan `push.default=upstream` — mendorong commit item ke `main`. Skrip kini mencetak perintah push pertama.
+- `DEVELOPER.md` DoD 8: push pertama `git push -u origin <branch>`.
+- `new-worktree.ps1` diuji di Windows PowerShell 5.1.
+
 ## [0.1.1] — 2026-10-30
 ### Diperbaiki
 - `install.ps1`, `new-worktree.ps1`: tanpa karakter non-ASCII di pesan skrip. Windows PowerShell 5.1 membaca skrip tanpa BOM
