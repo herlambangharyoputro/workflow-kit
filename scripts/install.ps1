@@ -81,7 +81,7 @@ Write-Host ''
 Write-Host "workflow-kit $Versi (mode $Mode): $dibuat berkas dibuat, $dilewati dilewati."
 if ($Mode -eq 'multi') {
   Write-Host 'Berikutnya: isi docs/PROJECT.md dan docs/apps/*/APP.md serta .worktree-copy, lalu commit.'
-  Write-Host 'Menambah aplikasi ke proyek yang sudah terpasang? Tambahkan juga barisnya di docs/PROJECT.md §1a.'
+  Write-Host 'Menambah aplikasi ke proyek yang sudah terpasang? Tambahkan juga barisnya di docs/PROJECT.md bagian 1a.'
 } else {
   Write-Host 'Berikutnya: isi docs/PROJECT.md serta .worktree-copy, lalu commit.'
 }

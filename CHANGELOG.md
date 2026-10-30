@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.1] — 2026-10-30
+### Diperbaiki
+- `install.ps1`, `new-worktree.ps1`: tanpa karakter non-ASCII di pesan skrip. Windows PowerShell 5.1 membaca skrip tanpa BOM
+  sebagai ANSI sehingga `§`/`—` tampil rusak (`Â§`). Isi berkas yang dihasilkan tidak terdampak.
+- `install.ps1` diuji di Windows (mode multi-aplikasi): 29 berkas, tanpa sisa penanda.
+
 ## [0.1.0] — 2026-10-30
 Rilis pertama, diangkat dari alur kerja proyek SIMANTARA (D-H000-02, D-H000-03 di proyek itu) setelah dua siklus penuh
 (H017–H028).

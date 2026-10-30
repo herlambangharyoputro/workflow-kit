@@ -61,4 +61,6 @@ Sesi Arsitek di proyek: baca `CHANGELOG.md` kit, terapkan perubahan ke file pera
 
 ## Status pengujian
 - `install.sh` dan `new-worktree.sh`: diuji (mode satu & multi aplikasi, penambahan aplikasi, branch baru & yang sudah ada di origin).
-- `install.ps1` dan `new-worktree.ps1`: **belum diuji** di Windows — uji dulu ke repo percobaan sebelum dipakai di proyek nyata.
+- `install.ps1`: diuji di Windows PowerShell 5.1 (mode multi-aplikasi).
+- `new-worktree.ps1`: **belum diuji** di Windows — uji dulu di repo percobaan sebelum dipakai di proyek nyata.
+- Skrip `.ps1` sengaja hanya berisi karakter ASCII (PowerShell 5.1 membaca skrip tanpa BOM sebagai ANSI).
