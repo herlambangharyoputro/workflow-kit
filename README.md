@@ -86,6 +86,7 @@ Sesi Arsitek di proyek: baca `CHANGELOG.md` kit, terapkan perubahan ke file pera
 ## Status pengujian
 - `new-worktree.sh`: diuji (branch baru & yang sudah ada di origin, salin `.worktree-copy`).
 - `install.sh`: diuji untuk mode satu/multi aplikasi, migrasi, deteksi alur lama, pemasangan ulang, dan template ber-CRLF.
-- `install.ps1`: 0.1.x diuji di Windows PowerShell 5.1; versi 0.2.0 (migrasi, pemroses penanda baru) **belum diuji** di Windows.
+- `install.ps1`: diuji di Windows PowerShell 5.1 — deteksi alur kerja lama (GAGAL + saran `git mv`) dan mode multi + migrasi
+  (indoskillmap, 30 Okt 2026: 33 berkas, tanpa sisa penanda). Mode satu aplikasi di Windows belum diuji ulang sejak perbaikan CRLF 0.2.0.
 - `new-worktree.ps1`: diuji di Windows PowerShell 5.1 (branch baru dari `origin/main`, salin `.worktree-copy`).
 - Skrip `.ps1` sengaja hanya berisi karakter ASCII (PowerShell 5.1 membaca skrip tanpa BOM sebagai ANSI).
