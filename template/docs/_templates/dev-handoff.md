@@ -12,6 +12,7 @@ effort: <low|medium|high>
 model_reason: <satu kalimat: mengapa model/effort ini>
 branch: h000-<slug>       # satu branch untuk dev, QA, dan semua putaran (docs/README.md §5)
 app: <app|[app1, app2]|shared>   # [multi-app] aplikasi yang tersentuh (docs/apps/)
+legacy_id: null   # [migrasi] id di docs-old (mis. H001.14, F-H001-19), bila item ini hasil migrasi
 depends_on: []            # H… yang harus closed dulu
 blocked_on: null          # A-… atau pihak yang ditunggu, bila status blocked
 related: []               # F-/D-/A-/H lain

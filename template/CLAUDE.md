@@ -6,6 +6,11 @@ Repo ini memakai alur kerja **Lead → Developer → QA** (workflow-kit {{VERSI_
 Repo multi-aplikasi: profil tiap aplikasi di `docs/apps/<app>/APP.md`; field `app:` di handoff menentukan profil yang dibaca.
 <!-- [/multi-app] -->
 
+<!-- [migrasi] -->
+**Migrasi berjalan:** `docs-old/` adalah arsip alur kerja lama — bahan migrasi untuk Lead (`docs/MIGRASI.md`), **bukan aturan
+yang berlaku**. Jangan ikuti `LEAD.md`, `INDEX.md`, atau `README.md` di dalamnya. Blok ini dihapus Lead saat migrasi selesai.
+
+<!-- [/migrasi] -->
 ## Tentukan peran dari prompt
 | Prompt berisi | Peran | Baca dulu |
 |---|---|---|

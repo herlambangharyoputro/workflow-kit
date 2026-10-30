@@ -7,6 +7,7 @@ Claude Code, dengan luaran publikasi bila ada. Lahir dan diuji di proyek SIMANTA
 | Path | Isi |
 |---|---|
 | `template/` | berkas yang disalin ke root repo proyek: `CLAUDE.md` dan `docs/` (file peran, template, INDEX, PROJECT, ASUMSI, …) |
+| `template-migrasi/` | tambahan untuk proyek dengan alur kerja lama: `docs/MIGRASI.md` dan decision `D-H000-02` |
 | `scripts/install.sh`, `scripts/install.ps1` | memasang `template/` ke repo proyek tanpa menimpa berkas yang sudah ada |
 | `scripts/new-worktree.sh`, `scripts/new-worktree.ps1` | menyiapkan worktree per item kerja untuk sesi paralel |
 | `VERSION`, `CHANGELOG.md` | versi kit |
@@ -47,6 +48,23 @@ Lalu di repo proyek: isi `docs/PROJECT.md` (dan `docs/apps/*/APP.md`), isi `.wor
 Proyek yang sudah punya `docs/` dengan isi lain: installer hanya menambah berkas yang belum ada dan melaporkan yang dilewati —
 sesi Arsitek di proyek itu yang menyelaraskan sisanya.
 
+## Memigrasikan proyek dengan alur kerja lama
+Installer **menolak** memasang kit bila `docs/` sudah berisi alur kerja lain (`docs/handoff/` atau `docs/**/INDEX.md`), supaya
+tidak ada dua sistem aktif. Caranya:
+1. Selesaikan dan commit pekerjaan alur lama yang sedang berjalan; tutup sesi Lead lama.
+2. Pindahkan alur lama dengan `git mv` (riwayat ikut pindah), lalu commit:
+   ```powershell
+   git mv docs docs-old
+   git mv PLAN_master.md docs-old/v1/PLAN_master.md   # berkas v1 di root, satu per satu (installer menampilkan daftarnya)
+   git commit -m "H000: pindahkan alur kerja lama ke docs-old"
+   ```
+3. Pasang dengan `-Migrasi` / `--migrasi` (plus `-Apps` bila multi-aplikasi). Ditambahkan `docs/MIGRASI.md`, decision `D-H000-02`,
+   baris migrasi di INDEX, field `legacy_id` di template, dan peringatan di `CLAUDE.md` agar sesi lain tidak mengikuti `docs-old/`.
+4. Commit, lalu beri tahu sesi Lead: *"Kamu Lead. Jalankan docs/MIGRASI.md."* Lead menulis ulang hanya yang masih hidup (item aktif,
+   finding & asumsi terbuka, decision berlaku), mencatat sisanya di tabel Peta, lalu menghapus `docs-old/` saat checklist selesai.
+
+Id baru melanjutkan dari nomor main lama tertinggi; id lama dicatat di `legacy_id` sehingga commit dan komentar kode lama tetap bisa ditelusuri.
+
 ## Sesi paralel
 Dari dalam repo proyek:
 ```powershell
@@ -60,7 +78,8 @@ Sesi Arsitek di proyek: baca `CHANGELOG.md` kit, terapkan perubahan ke file pera
 `D-H000-<nn>` (lihat `template/docs/ARSITEK.md`). Pelajaran dari proyek yang berlaku umum dibawa balik ke kit.
 
 ## Status pengujian
-- `install.sh` dan `new-worktree.sh`: diuji (mode satu & multi aplikasi, penambahan aplikasi, branch baru & yang sudah ada di origin).
-- `install.ps1`: diuji di Windows PowerShell 5.1 (mode multi-aplikasi).
+- `new-worktree.sh`: diuji (branch baru & yang sudah ada di origin, salin `.worktree-copy`).
+- `install.sh`: diuji untuk mode satu/multi aplikasi, migrasi, deteksi alur lama, pemasangan ulang, dan template ber-CRLF.
+- `install.ps1`: 0.1.x diuji di Windows PowerShell 5.1; versi 0.2.0 (migrasi, pemroses penanda baru) **belum diuji** di Windows.
 - `new-worktree.ps1`: diuji di Windows PowerShell 5.1 (branch baru dari `origin/main`, salin `.worktree-copy`).
 - Skrip `.ps1` sengaja hanya berisi karakter ASCII (PowerShell 5.1 membaca skrip tanpa BOM sebagai ANSI).

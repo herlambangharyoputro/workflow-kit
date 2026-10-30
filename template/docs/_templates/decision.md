@@ -4,6 +4,7 @@ type: decision
 title: <keputusan singkat>
 handoff: H000
 app: <app|[app1, app2]|shared>   # [multi-app] aplikasi yang tersentuh (docs/apps/)
+legacy_id: null   # [migrasi] id di docs-old (mis. H001.14, F-H001-19), bila item ini hasil migrasi
 status: proposed          # proposed | accepted | provisional | superseded  (TIDAK diedit setelah accepted)
 created: YYYY-MM-DD HH:MM WIB
 proposed_by: Lead

@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0] — 2026-10-30
+### Ditambahkan
+- **Mode migrasi** (`--migrasi` / `-Migrasi`) untuk proyek yang sudah punya alur kerja lama: syarat `docs-old/` (hasil `git mv docs docs-old`),
+  `docs/MIGRASI.md` (prosedur & checklist Lead: tulis ulang hanya yang masih hidup, tabel Peta id lama, id baru lanjut dari main lama
+  tertinggi), decision `D-H000-02`, baris migrasi di INDEX, field `legacy_id` di template, peringatan `docs-old/` di `CLAUDE.md`.
+- Installer **menolak** memasang bila `docs/` berisi alur kerja lain (`docs/handoff/` atau `docs/**/INDEX.md`) dan menampilkan
+  perintah `git mv`; menampilkan daftar berkas alur v1 di root (`PLAN_*`, `progress_*`, `SKILL_*`, …).
+- Pesan "folder tidak ditemukan" yang jelas; `.gitattributes` (LF).
+### Diperbaiki
+- Template ber-CRLF (checkout Windows dengan `autocrlf`) membuat blok `[multi-app]` tidak terhapus di mode satu aplikasi.
+  Installer kini menormalkan akhir baris ke LF sebelum memproses penanda.
+### Diubah
+- Pemroses penanda generik: tag `multi-app`, `single-app`, `migrasi`, `tanpa-migrasi` dalam bentuk baris, blok, span, dan YAML.
+### Pelajaran
+- Memasang kit di atas alur kerja lama (argopuro_walida, 30 Okt 2026) menghasilkan dua INDEX/LEAD dan `CLAUDE.md` yang mengalihkan
+  sesi Lead lama yang masih berjalan → deteksi + mode migrasi.
+
 ## [0.1.2] — 2026-10-30
 ### Diperbaiki
 - `new-worktree`: branch item baru dibuat dengan `--no-track`. Sebelumnya branch mengikuti `origin/main`, sehingga `git push`
