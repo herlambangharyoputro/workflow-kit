@@ -91,6 +91,11 @@ D:\workflow-kit\scripts\new-worktree.ps1 H027
 Membuat `..\<repo>-h027` di branch dari frontmatter `branch:` dev handoff H027 (dari `origin` bila sudah ada, atau baru dari
 `origin/main`), lalu menyalin berkas di `.worktree-copy` (mis. `vendor`, `.env`). Satu folder = satu sesi.
 
+## Repo yang strukturnya sudah seperti kit
+Repo yang `docs/`-nya sudah berisi `INDEX.md` dan `dev-handoff/` (mis. SIMANTARA, asal kit) tetapi tidak dipasang lewat installer:
+pakai `-Adopsi` / `--adopsi` (working tree bersih). Hasilnya sama dengan upgrade; berkas generik yang memuat catatan khas proyek
+(mis. tabel path lama di `README.md`) perlu dipindah ke `PROJECT.md` atau decision adopsi — periksa baris yang hilang di `git diff`.
+
 ## Memperbarui proyek ke versi kit baru
 Dengan working tree bersih:
 ```powershell

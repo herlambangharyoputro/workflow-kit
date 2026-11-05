@@ -1,12 +1,14 @@
 <#
   Pasang workflow-kit ke sebuah repo proyek. Tidak menimpa berkas yang sudah ada.
 
-    .\scripts\install.ps1 -Target D:\repo\proyek -Nama "Nama Proyek" -Repo owner/repo -Pemilik "Nama" [-Apps a,b,c] [-Migrasi | -Upgrade]
+    .\scripts\install.ps1 -Target D:\repo\proyek -Nama "Nama Proyek" -Repo owner/repo -Pemilik "Nama" [-Apps a,b,c] [-Migrasi | -Upgrade | -Adopsi]
 
   Tanpa -Apps: mode satu aplikasi. Dengan -Apps: multi-aplikasi (docs\apps\<app>\APP.md per aplikasi).
   -Migrasi: repo punya alur kerja lama yang sudah dipindah ke docs-old\ (git mv docs docs-old); ditambah docs\MIGRASI.md.
   -Upgrade: kit sudah terpasang; timpa HANYA berkas generik kit (AGENTS/CLAUDE, file peran, _templates, scripts\workflow),
             buat berkas baru yang belum ada, dan catat decision upgrade. Berkas milik proyek tidak disentuh.
+  -Adopsi:  seperti -Upgrade, untuk repo yang struktur docs\-nya SUDAH seperti kit (INDEX.md, dev-handoff\) tetapi
+            tidak dipasang lewat installer (mis. repo asal kit). Decision adopsi diberi nomor D-H000 berikutnya.
 #>
 param(
   [Parameter(Mandatory)][string]$Target,
@@ -15,7 +17,8 @@ param(
   [Parameter(Mandatory)][string]$Pemilik,
   [string[]]$Apps = @(),
   [switch]$Migrasi,
-  [switch]$Upgrade
+  [switch]$Upgrade,
+  [switch]$Adopsi
 )
 $ErrorActionPreference = 'Stop'
 function Gagal([string]$Pesan) { Write-Host "GAGAL: $Pesan" -ForegroundColor Red; exit 1 }
@@ -27,7 +30,14 @@ $Target = (Resolve-Path $Target).Path
 if (-not (Test-Path (Join-Path $Target '.git'))) { Gagal "bukan repo git: $Target" }
 
 # --- Deteksi keadaan repo -------------------------------------------------------------------------------------------
-$KitAda = Test-Path (Join-Path $Target 'docs\decisions\D-H000-01_adopsi-workflow-kit_*')
+$KitAda = Test-Path (Join-Path $Target 'docs\decisions\D-H000-*_adopsi-workflow-kit_*')
+if ($Adopsi) {
+  if ($KitAda) { Gagal 'workflow-kit sudah terpasang; pakai -Upgrade.' }
+  if (-not ((Test-Path (Join-Path $Target 'docs\INDEX.md')) -and (Test-Path (Join-Path $Target 'docs\dev-handoff')))) {
+    Gagal '-Adopsi butuh docs\INDEX.md dan docs\dev-handoff\ (struktur kit); repo lain pakai -Migrasi.'
+  }
+  $KitAda = $true; $Upgrade = [switch]::Present
+}
 $Lama = ''
 if (-not $KitAda -and (Test-Path (Join-Path $Target 'docs'))) {
   if (Test-Path (Join-Path $Target 'docs\handoff')) { $Lama = 'docs/handoff/' }
@@ -37,6 +47,9 @@ if (-not $KitAda -and (Test-Path (Join-Path $Target 'docs'))) {
   }
 }
 if ($KitAda -and $Migrasi) { Gagal 'workflow-kit sudah terpasang; -Migrasi hanya untuk pemasangan pertama.' }
+if ($Lama -and (Test-Path (Join-Path $Target 'docs\INDEX.md')) -and (Test-Path (Join-Path $Target 'docs\dev-handoff'))) {
+  Gagal 'docs\ sudah berstruktur seperti kit (INDEX.md, dev-handoff\) tetapi tidak dipasang lewat installer: pakai -Adopsi.'
+}
 if ($Lama) {
   Gagal ("repo sudah punya alur kerja lama di docs/ (mis. $Lama). Pindahkan dulu lalu pasang ulang dengan -Migrasi:`n" +
          "    git -C `"$Target`" mv docs docs-old; git -C `"$Target`" commit -m `"H000: pindahkan alur kerja lama ke docs-old`"")
@@ -44,7 +57,7 @@ if ($Lama) {
 $MigrasiAktif = [bool]$Migrasi
 $VersiLama = ''
 if ($Upgrade) {
-  if (-not $KitAda) { Gagal '-Upgrade butuh workflow-kit yang sudah terpasang (docs\decisions\D-H000-01_adopsi-workflow-kit_*).' }
+  if (-not $KitAda) { Gagal '-Upgrade butuh workflow-kit yang sudah terpasang (docs\decisions\D-H000-*_adopsi-workflow-kit_*); repo asal kit: -Adopsi.' }
   if ($Migrasi) { Gagal '-Upgrade dan -Migrasi tidak bisa dipakai bersamaan.' }
   if (git -C $Target status --porcelain) { Gagal 'working tree belum bersih; commit/stash dulu supaya hasil upgrade bisa ditinjau dengan git diff.' }
   if (Test-Path (Join-Path $Target 'docs\MIGRASI.md')) { $MigrasiAktif = $true }
@@ -131,10 +144,18 @@ if ($Upgrade) {
   $nums = @(Get-ChildItem (Join-Path $Target 'docs\decisions') -Filter 'D-H000-*_*' -File | ForEach-Object { if ($_.Name -match '^D-H000-(\d+)_') { [int]$Matches[1] } })
   $nn = '{0:D2}' -f ((($nums | Measure-Object -Maximum).Maximum) + 1)
   $lv = if ($VersiLama) { $VersiLama } else { '?' }
+  if ($Adopsi) {
+    $dst = Join-Path $Target "docs\decisions\D-H000-${nn}_adopsi-workflow-kit_${Ts}.md"
+    $isiD = "---`nid: D-H000-$nn`ntype: decision`ntitle: Adopsi workflow-kit $Versi untuk struktur docs yang sudah ada`nhandoff: H000`nstatus: accepted`ncreated: $Tanggal`nproposed_by: Arsitek`ndecided_by: $Pemilik`naccepted_at: $Tanggal`nsupersedes: null`nsuperseded_by: null`nrelated: []`n---`n`n" +
+            "# D-H000-$nn - Adopsi workflow-kit $Versi`n`n## Keputusan`nRepo ini sudah memakai struktur docs/ yang sama dengan workflow-kit. Berkas generik kit (AGENTS.md, CLAUDE.md, file peran,`n" +
+            "``_templates/``, ``scripts/workflow/``) kini mengikuti workflow-kit $Versi; berkas milik proyek tidak diubah. Pembaruan berikutnya`nlewat installer ``-Upgrade``.`n`n" +
+            "## Konsekuensi`nLead mendaftarkan decision ini di ``INDEX.md`` dan melengkapi ``PROJECT.md`` dengan bagian kit yang belum ada.`n"
+  } else {
   $dst = Join-Path $Target "docs\decisions\D-H000-${nn}_upgrade-workflow-kit-${Versi}_${Ts}.md"
   $isiD = "---`nid: D-H000-$nn`ntype: decision`ntitle: Upgrade workflow-kit ke $Versi`nhandoff: H000`nstatus: accepted`ncreated: $Tanggal`nproposed_by: Arsitek`ndecided_by: $Pemilik`naccepted_at: $Tanggal`nsupersedes: null`nsuperseded_by: null`nrelated: [D-H000-01]`n---`n`n" +
           "# D-H000-$nn - Upgrade workflow-kit ke $Versi`n`n## Keputusan`nBerkas generik kit (AGENTS.md, CLAUDE.md, file peran, ``_templates/``, ``scripts/workflow/``) diperbarui dari versi $lv ke $Versi.`n" +
           "Berkas milik proyek tidak diubah. Perubahan aturan: lihat CHANGELOG workflow-kit $Versi.`n`n## Konsekuensi`nLead mendaftarkan decision ini di ``INDEX.md`` dan menyesuaikan ``PROJECT.md`` bila CHANGELOG meminta bagian baru.`n"
+  }
   [System.IO.File]::WriteAllText($dst, $isiD, $Utf8)
   Write-Host "  buat: docs/decisions/$(Split-Path -Leaf $dst)"; $script:dibuat++
 }
@@ -155,7 +176,7 @@ if (-not (Test-Path $wc)) {
 }
 
 Write-Host ''
-$label = $Mode; if ($MigrasiAktif) { $label += ', migrasi' }; if ($Upgrade) { $label += ', upgrade' }
+$label = $Mode; if ($MigrasiAktif) { $label += ', migrasi' }; if ($Adopsi) { $label += ', adopsi' } elseif ($Upgrade) { $label += ', upgrade' }
 Write-Host "workflow-kit $Versi (mode $label): $($script:dibuat) berkas dibuat/diperbarui, $($script:dilewati) dilewati."
 if ($Upgrade) { Write-Host 'Upgrade: tinjau git diff, sesuaikan docs/PROJECT.md bila CHANGELOG meminta bagian baru, lalu commit.' }
 if ($Mode -eq 'multi') {

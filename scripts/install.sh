@@ -7,12 +7,14 @@
 # --migrasi: repo punya alur kerja lama yang sudah dipindah ke docs-old/ (git mv docs docs-old); ditambah docs/MIGRASI.md.
 # --upgrade: kit sudah terpasang; timpa HANYA berkas generik kit (AGENTS/CLAUDE, file peran, _templates, scripts/workflow),
 #            buat berkas baru yang belum ada, dan catat decision upgrade. Berkas milik proyek tidak disentuh.
+# --adopsi:  seperti --upgrade, untuk repo yang struktur docs/-nya SUDAH seperti kit (INDEX.md, dev-handoff/) tetapi
+#            tidak dipasang lewat installer (mis. repo asal kit). Decision adopsi diberi nomor D-H000 berikutnya.
 set -euo pipefail
 
 KIT="$(cd "$(dirname "$0")/.." && pwd)"
 VERSI="$(tr -d '[:space:]' < "$KIT/VERSION")"
 TARGET="${1:-}"; shift || true
-NAMA=""; REPO=""; PEMILIK=""; APPS=""; MIGRASI=0; UPGRADE=0
+NAMA=""; REPO=""; PEMILIK=""; APPS=""; MIGRASI=0; UPGRADE=0; ADOPSI=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --nama) NAMA="$2"; shift 2 ;;
@@ -21,16 +23,22 @@ while [ $# -gt 0 ]; do
     --apps) APPS="$2"; shift 2 ;;
     --migrasi) MIGRASI=1; shift ;;
     --upgrade) UPGRADE=1; shift ;;
+    --adopsi) ADOPSI=1; shift ;;
     *) echo "Argumen tidak dikenal: $1" >&2; exit 1 ;;
   esac
 done
 gagal() { echo "GAGAL: $*" >&2; exit 1; }
-if [ -z "$TARGET" ] || [ -z "$NAMA" ] || [ -z "$REPO" ] || [ -z "$PEMILIK" ]; then sed -n '2,10p' "$0" >&2; exit 1; fi
+if [ -z "$TARGET" ] || [ -z "$NAMA" ] || [ -z "$REPO" ] || [ -z "$PEMILIK" ]; then sed -n '2,12p' "$0" >&2; exit 1; fi
 [ -d "$TARGET" ] || gagal "folder tidak ditemukan: $TARGET (clone repo-nya dulu)"
 [ -d "$TARGET/.git" ] || gagal "bukan repo git: $TARGET"
 
 # --- Deteksi keadaan repo -------------------------------------------------------------------------------------------
-KIT_ADA=0; ls "$TARGET"/docs/decisions/D-H000-01_adopsi-workflow-kit_* >/dev/null 2>&1 && KIT_ADA=1
+KIT_ADA=0; ls "$TARGET"/docs/decisions/D-H000-*_adopsi-workflow-kit_* >/dev/null 2>&1 && KIT_ADA=1
+if [ "$ADOPSI" = 1 ]; then
+  [ "$KIT_ADA" = 0 ] || gagal "workflow-kit sudah terpasang; pakai --upgrade."
+  { [ -f "$TARGET/docs/INDEX.md" ] && [ -d "$TARGET/docs/dev-handoff" ]; } || gagal "--adopsi butuh docs/INDEX.md dan docs/dev-handoff/ (struktur kit); repo lain pakai --migrasi."
+  KIT_ADA=1; UPGRADE=1
+fi
 LAMA=""
 if [ "$KIT_ADA" = 0 ] && [ -d "$TARGET/docs" ]; then
   [ -d "$TARGET/docs/handoff" ] && LAMA="docs/handoff/"
@@ -38,14 +46,17 @@ if [ "$KIT_ADA" = 0 ] && [ -d "$TARGET/docs" ]; then
 fi
 if [ "$KIT_ADA" = 1 ] && [ "$MIGRASI" = 1 ]; then gagal "workflow-kit sudah terpasang; --migrasi hanya untuk pemasangan pertama."; fi
 if [ "$UPGRADE" = 1 ]; then
-  [ "$KIT_ADA" = 1 ] || gagal "--upgrade butuh workflow-kit yang sudah terpasang (docs/decisions/D-H000-01_adopsi-workflow-kit_*)."
+  [ "$KIT_ADA" = 1 ] || gagal "--upgrade butuh workflow-kit yang sudah terpasang (docs/decisions/D-H000-*_adopsi-workflow-kit_*); repo asal kit: --adopsi."
   [ "$MIGRASI" = 0 ] || gagal "--upgrade dan --migrasi tidak bisa dipakai bersamaan."
   [ -z "$(git -C "$TARGET" status --porcelain)" ] || gagal "working tree belum bersih; commit/stash dulu supaya hasil upgrade bisa ditinjau dengan git diff."
   [ -f "$TARGET/docs/MIGRASI.md" ] && MIGRASI=1   # migrasi masih berjalan: pertahankan blok migrasi
-  lama="$(sed -n 's/.*\*\*workflow-kit \([0-9.]*\)\*\*.*/\1/p' "$TARGET/docs/README.md" | head -1)"
+  lama="$(sed -n 's/.*\*\*workflow-kit \([0-9.]*\)\*\*.*/\1/p' "$TARGET/docs/README.md" 2>/dev/null | head -1 || true)"
   if [ -z "$APPS" ] && [ -d "$TARGET/docs/apps" ]; then APPS="$(ls -1 "$TARGET/docs/apps" | tr '\n' ',' | sed 's/,$//')"; fi
 fi
 if [ -n "$LAMA" ]; then
+  if [ -f "$TARGET/docs/INDEX.md" ] && [ -d "$TARGET/docs/dev-handoff" ]; then
+    gagal "docs/ sudah berstruktur seperti kit (INDEX.md, dev-handoff/) tetapi tidak dipasang lewat installer: pakai --adopsi."
+  fi
   gagal "repo sudah punya alur kerja lama di docs/ (mis. $LAMA). Pindahkan dulu lalu pasang ulang dengan --migrasi:
     git -C \"$TARGET\" mv docs docs-old && git -C \"$TARGET\" commit -m \"H000: pindahkan alur kerja lama ke docs-old\""
 fi
@@ -128,10 +139,17 @@ done
 if [ "$UPGRADE" = 1 ]; then
   n="$(ls "$TARGET"/docs/decisions/D-H000-*_* 2>/dev/null | sed 's#.*/D-H000-\([0-9]*\)_.*#\1#' | sort -n | tail -1)"
   nn="$(printf '%02d' $((10#${n:-0} + 1)))"
+  if [ "$ADOPSI" = 1 ]; then
+    dst="$TARGET/docs/decisions/D-H000-${nn}_adopsi-workflow-kit_${TS}.md"
+    printf -- '---\nid: D-H000-%s\ntype: decision\ntitle: Adopsi workflow-kit %s untuk struktur docs yang sudah ada\nhandoff: H000\nstatus: accepted\ncreated: %s\nproposed_by: Arsitek\ndecided_by: %s\naccepted_at: %s\nsupersedes: null\nsuperseded_by: null\nrelated: []\n---\n\n# D-H000-%s — Adopsi workflow-kit %s\n\n## Keputusan\nRepo ini sudah memakai struktur docs/ yang sama dengan workflow-kit. Berkas generik kit (AGENTS.md, CLAUDE.md, file peran,\n`_templates/`, `scripts/workflow/`) kini mengikuti workflow-kit %s; berkas milik proyek tidak diubah. Pembaruan berikutnya\nlewat installer `--upgrade`.\n\n## Konsekuensi\nLead mendaftarkan decision ini di `INDEX.md` dan melengkapi `PROJECT.md` dengan bagian kit yang belum ada.\n' \
+      "$nn" "$VERSI" "$TANGGAL" "$PEMILIK" "$TANGGAL" "$nn" "$VERSI" "$VERSI" > "$dst"
+    echo "  buat: docs/decisions/$(basename "$dst")"; dibuat=$((dibuat+1))
+  else
   dst="$TARGET/docs/decisions/D-H000-${nn}_upgrade-workflow-kit-${VERSI}_${TS}.md"
   printf -- '---\nid: D-H000-%s\ntype: decision\ntitle: Upgrade workflow-kit ke %s\nhandoff: H000\nstatus: accepted\ncreated: %s\nproposed_by: Arsitek\ndecided_by: %s\naccepted_at: %s\nsupersedes: null\nsuperseded_by: null\nrelated: [D-H000-01]\n---\n\n# D-H000-%s — Upgrade workflow-kit ke %s\n\n## Keputusan\nBerkas generik kit (AGENTS.md, CLAUDE.md, file peran, `_templates/`, `scripts/workflow/`) diperbarui dari versi %s ke %s.\nBerkas milik proyek tidak diubah. Perubahan aturan: lihat CHANGELOG workflow-kit %s.\n\n## Konsekuensi\nLead mendaftarkan decision ini di `INDEX.md` dan menyesuaikan `PROJECT.md` bila CHANGELOG meminta bagian baru.\n' \
     "$nn" "$VERSI" "$TANGGAL" "$PEMILIK" "$TANGGAL" "$nn" "$VERSI" "${lama:-?}" "$VERSI" "$VERSI" > "$dst"
   echo "  buat: docs/decisions/$(basename "$dst")"; dibuat=$((dibuat+1))
+  fi
 fi
 
 if [ "$MODE" = multi ]; then
@@ -151,7 +169,7 @@ if [ ! -e "$TARGET/.worktree-copy" ]; then
 fi
 
 echo
-echo "workflow-kit $VERSI (mode $MODE$([ "$MIGRASI" = 1 ] && echo ', migrasi')$([ "$UPGRADE" = 1 ] && echo ', upgrade')): $dibuat berkas dibuat/diperbarui, $dilewati dilewati."
+echo "workflow-kit $VERSI (mode $MODE$([ "$MIGRASI" = 1 ] && echo ', migrasi')$([ "$ADOPSI" = 1 ] && echo ', adopsi' || { [ "$UPGRADE" = 1 ] && echo ', upgrade'; })): $dibuat berkas dibuat/diperbarui, $dilewati dilewati."
 if [ "$UPGRADE" = 1 ]; then echo "Upgrade: tinjau git diff, sesuaikan docs/PROJECT.md bila CHANGELOG meminta bagian baru, lalu commit."; fi
 if [ "$MODE" = multi ]; then
   echo "Berikutnya: isi docs/PROJECT.md dan docs/apps/*/APP.md serta .worktree-copy, lalu commit."

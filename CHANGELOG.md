@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1] — 2026-11-05
+### Ditambahkan
+- **`--adopsi` / `-Adopsi`**: untuk repo yang struktur `docs/`-nya sudah seperti kit tetapi tidak dipasang lewat installer
+  (SIMANTARA, asal kit). Berkas generik ditimpa seperti `--upgrade`; decision adopsi memakai nomor `D-H000` berikutnya.
+### Diubah
+- Deteksi "kit sudah terpasang" kini mengenali `D-H000-*_adopsi-workflow-kit_*` (tidak harus `D-H000-01`).
+
 ## [0.4.0] — 2026-11-05
 ### Ditambahkan
 - **`AGENTS.md`** sebagai titik masuk semua agen (DeepSeek & klien lain); `CLAUDE.md` kini hanya `@AGENTS.md`.
