@@ -1,6 +1,7 @@
 ---
 handoff: H000
 peran: qa
+model: <model yang benar-benar mengerjakan, mis. claude-sonnet / deepseek-…>
 putaran: 1
 verdict: GAGAL            # LULUS | GAGAL
 branch: <branch>

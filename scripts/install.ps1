@@ -1,10 +1,12 @@
 <#
   Pasang workflow-kit ke sebuah repo proyek. Tidak menimpa berkas yang sudah ada.
 
-    .\scripts\install.ps1 -Target D:\repo\proyek -Nama "Nama Proyek" -Repo owner/repo -Pemilik "Nama" [-Apps a,b,c] [-Migrasi]
+    .\scripts\install.ps1 -Target D:\repo\proyek -Nama "Nama Proyek" -Repo owner/repo -Pemilik "Nama" [-Apps a,b,c] [-Migrasi | -Upgrade]
 
   Tanpa -Apps: mode satu aplikasi. Dengan -Apps: multi-aplikasi (docs\apps\<app>\APP.md per aplikasi).
   -Migrasi: repo punya alur kerja lama yang sudah dipindah ke docs-old\ (git mv docs docs-old); ditambah docs\MIGRASI.md.
+  -Upgrade: kit sudah terpasang; timpa HANYA berkas generik kit (AGENTS/CLAUDE, file peran, _templates, scripts\workflow),
+            buat berkas baru yang belum ada, dan catat decision upgrade. Berkas milik proyek tidak disentuh.
 #>
 param(
   [Parameter(Mandatory)][string]$Target,
@@ -12,7 +14,8 @@ param(
   [Parameter(Mandatory)][string]$Repo,
   [Parameter(Mandatory)][string]$Pemilik,
   [string[]]$Apps = @(),
-  [switch]$Migrasi
+  [switch]$Migrasi,
+  [switch]$Upgrade
 )
 $ErrorActionPreference = 'Stop'
 function Gagal([string]$Pesan) { Write-Host "GAGAL: $Pesan" -ForegroundColor Red; exit 1 }
@@ -38,6 +41,17 @@ if ($Lama) {
   Gagal ("repo sudah punya alur kerja lama di docs/ (mis. $Lama). Pindahkan dulu lalu pasang ulang dengan -Migrasi:`n" +
          "    git -C `"$Target`" mv docs docs-old; git -C `"$Target`" commit -m `"H000: pindahkan alur kerja lama ke docs-old`"")
 }
+$MigrasiAktif = [bool]$Migrasi
+$VersiLama = ''
+if ($Upgrade) {
+  if (-not $KitAda) { Gagal '-Upgrade butuh workflow-kit yang sudah terpasang (docs\decisions\D-H000-01_adopsi-workflow-kit_*).' }
+  if ($Migrasi) { Gagal '-Upgrade dan -Migrasi tidak bisa dipakai bersamaan.' }
+  if (git -C $Target status --porcelain) { Gagal 'working tree belum bersih; commit/stash dulu supaya hasil upgrade bisa ditinjau dengan git diff.' }
+  if (Test-Path (Join-Path $Target 'docs\MIGRASI.md')) { $MigrasiAktif = $true }
+  if ($Apps.Count -eq 0 -and (Test-Path (Join-Path $Target 'docs\apps'))) { $Apps = @(Get-ChildItem (Join-Path $Target 'docs\apps') -Directory | ForEach-Object { $_.Name }) }
+  $rd = Join-Path $Target 'docs\README.md'
+  if (Test-Path $rd) { $mm = Select-String -Path $rd -Pattern '\*\*workflow-kit ([0-9.]+)\*\*' | Select-Object -First 1; if ($mm) { $VersiLama = $mm.Matches[0].Groups[1].Value } }
+}
 if ($Migrasi -and -not (Test-Path (Join-Path $Target 'docs-old'))) { Gagal '-Migrasi butuh folder docs-old\ (git mv docs docs-old).' }
 $V1 = @('PLAN_*.md','progress_*.md','PROGRESS*.md','KEPUTUSAN_*.md','SKILL_*.md','GUIDELINES_*.md','agent_*') |
   ForEach-Object { Get-ChildItem (Join-Path $Target $_) -ErrorAction SilentlyContinue } | ForEach-Object { $_.Name }
@@ -47,7 +61,7 @@ $Apps = @($Apps | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim().
 $Mode = if ($Apps.Count -gt 0) { 'multi' } else { 'single' }
 $Drop = @()
 if ($Mode -eq 'multi') { $Drop += 'single-app' } else { $Drop += 'multi-app' }
-if ($Migrasi) { $Drop += 'tanpa-migrasi' } else { $Drop += 'migrasi' }
+if ($MigrasiAktif) { $Drop += 'tanpa-migrasi' } else { $Drop += 'migrasi' }
 try { $wib = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, 'SE Asia Standard Time') }
 catch { $wib = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, 'Asia/Jakarta') }
 $Tanggal = $wib.ToString('yyyy-MM-dd HH:mm') + ' WIB'
@@ -77,6 +91,7 @@ function Olah([string]$Teks) {
 }
 
 $script:dibuat = 0; $script:dilewati = 0
+function Generik([string]$rel) { return ($rel -in @('AGENTS.md','CLAUDE.md','docs/README.md','docs/LEAD.md','docs/DEVELOPER.md','docs/QA.md','docs/ARSITEK.md')) -or $rel.StartsWith('docs/_templates/') }
 function SalinDari([string]$Sumber) {
   Get-ChildItem $Sumber -Recurse -File -Force | Sort-Object FullName | ForEach-Object {
     $rel = $_.FullName.Substring($Sumber.Length + 1).Replace('\', '/')
@@ -85,6 +100,12 @@ function SalinDari([string]$Sumber) {
     $dst = Join-Path $Target $relDst
     $adaD = $false
     if ($rel -match '^docs/decisions/(D-H000-0\d)_') { $adaD = Test-Path (Join-Path $Target ("docs/decisions/" + $Matches[1] + "_*")) }
+    if ($Upgrade -and (Test-Path $dst) -and (Generik $rel)) {
+      $baru = if ($rel -like '*.md') { Olah ([System.IO.File]::ReadAllText($_.FullName, $Utf8)) } else { [System.IO.File]::ReadAllText($_.FullName, $Utf8) }
+      $lamaIsi = [System.IO.File]::ReadAllText($dst, $Utf8)
+      if ($baru -ne $lamaIsi) { [System.IO.File]::WriteAllText($dst, $baru, $Utf8); Write-Host "  perbarui: $relDst"; $script:dibuat++ }
+      return
+    }
     if ((Test-Path $dst) -or $adaD) { Write-Host "  lewati (sudah ada): $relDst"; $script:dilewati++; return }
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dst) | Out-Null
     if ($rel -like '*.md') {
@@ -95,6 +116,28 @@ function SalinDari([string]$Sumber) {
 }
 SalinDari (Join-Path $Kit 'template')
 if ($Migrasi) { SalinDari (Join-Path $Kit 'template-migrasi') }
+
+# Skrip alur kerja di dalam proyek (selalu versi kit terbaru).
+New-Item -ItemType Directory -Force -Path (Join-Path $Target 'scripts\workflow') | Out-Null
+foreach ($sk in 'check-docs.sh', 'check-docs.ps1', 'new-worktree.sh', 'new-worktree.ps1') {
+  $src = Join-Path $Kit "scripts\$sk"; $dst = Join-Path $Target "scripts\workflow\$sk"
+  if ((Test-Path $dst) -and ((Get-FileHash $src).Hash -eq (Get-FileHash $dst).Hash)) { continue }
+  if ((Test-Path $dst) -and -not $Upgrade) { Write-Host "  lewati (sudah ada): scripts/workflow/$sk"; $script:dilewati++; continue }
+  $aksi = if (Test-Path $dst) { 'perbarui' } else { 'buat' }
+  Copy-Item $src $dst -Force
+  Write-Host "  ${aksi}: scripts/workflow/$sk"; $script:dibuat++
+}
+if ($Upgrade) {
+  $nums = @(Get-ChildItem (Join-Path $Target 'docs\decisions') -Filter 'D-H000-*_*' -File | ForEach-Object { if ($_.Name -match '^D-H000-(\d+)_') { [int]$Matches[1] } })
+  $nn = '{0:D2}' -f ((($nums | Measure-Object -Maximum).Maximum) + 1)
+  $lv = if ($VersiLama) { $VersiLama } else { '?' }
+  $dst = Join-Path $Target "docs\decisions\D-H000-${nn}_upgrade-workflow-kit-${Versi}_${Ts}.md"
+  $isiD = "---`nid: D-H000-$nn`ntype: decision`ntitle: Upgrade workflow-kit ke $Versi`nhandoff: H000`nstatus: accepted`ncreated: $Tanggal`nproposed_by: Arsitek`ndecided_by: $Pemilik`naccepted_at: $Tanggal`nsupersedes: null`nsuperseded_by: null`nrelated: [D-H000-01]`n---`n`n" +
+          "# D-H000-$nn - Upgrade workflow-kit ke $Versi`n`n## Keputusan`nBerkas generik kit (AGENTS.md, CLAUDE.md, file peran, ``_templates/``, ``scripts/workflow/``) diperbarui dari versi $lv ke $Versi.`n" +
+          "Berkas milik proyek tidak diubah. Perubahan aturan: lihat CHANGELOG workflow-kit $Versi.`n`n## Konsekuensi`nLead mendaftarkan decision ini di ``INDEX.md`` dan menyesuaikan ``PROJECT.md`` bila CHANGELOG meminta bagian baru.`n"
+  [System.IO.File]::WriteAllText($dst, $isiD, $Utf8)
+  Write-Host "  buat: docs/decisions/$(Split-Path -Leaf $dst)"; $script:dibuat++
+}
 
 foreach ($app in $Apps) {
   $dst = Join-Path $Target "docs/apps/$app/APP.md"
@@ -112,8 +155,9 @@ if (-not (Test-Path $wc)) {
 }
 
 Write-Host ''
-$label = $Mode; if ($Migrasi) { $label += ', migrasi' }
-Write-Host "workflow-kit $Versi (mode $label): $($script:dibuat) berkas dibuat, $($script:dilewati) dilewati."
+$label = $Mode; if ($MigrasiAktif) { $label += ', migrasi' }; if ($Upgrade) { $label += ', upgrade' }
+Write-Host "workflow-kit $Versi (mode $label): $($script:dibuat) berkas dibuat/diperbarui, $($script:dilewati) dilewati."
+if ($Upgrade) { Write-Host 'Upgrade: tinjau git diff, sesuaikan docs/PROJECT.md bila CHANGELOG meminta bagian baru, lalu commit.' }
 if ($Mode -eq 'multi') {
   Write-Host 'Berikutnya: isi docs/PROJECT.md dan docs/apps/*/APP.md serta .worktree-copy, lalu commit.'
   Write-Host 'Menambah aplikasi ke proyek yang sudah terpasang? Tambahkan juga barisnya di docs/PROJECT.md bagian 1a.'

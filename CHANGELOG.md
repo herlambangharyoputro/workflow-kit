@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0] — 2026-11-05
+### Ditambahkan
+- **`AGENTS.md`** sebagai titik masuk semua agen (DeepSeek & klien lain); `CLAUDE.md` kini hanya `@AGENTS.md`.
+- **Sesi panjang wajib serah terima** (Lead, Developer, QA): tanda-tanda, cara serah terima di titik aman, prompt pembuka sesi baru;
+  bagian "Serah terima sesi Lead" di INDEX dan "Lanjutan untuk sesi berikutnya" di laporan dev.
+- **Rubrik tingkat model** (tinggi/menengah/ringan) + pemetaan model di `PROJECT.md` §2; field `tingkat:` di handoff, `model:` di laporan;
+  QA disarankan model berbeda dari developer.
+- **Gerbang risiko** (`LEAD.md` §2a) + field `risiko: normal|tinggi`: decision, simulasi/dry-run, canary, langkah nyata dijalankan
+  pemilik proyek, QA tingkat tinggi.
+- **Label perintah per lingkungan** (`💻 LOKAL` / `🖥️ VPS`, `PROJECT.md` §3).
+- **`scripts/workflow/check-docs`** (bash + PowerShell), disalin ke proyek bersama `new-worktree`.
+- **`--upgrade` / `-Upgrade`**: perbarui berkas generik kit di proyek terpasang tanpa menyentuh berkas proyek; decision upgrade otomatis.
+### Pelajaran
+- solana-trading-bot (alur kerja sendiri): indeks dari skrip + `--check`, field `model`, label perintah per lingkungan, dan gerbang dana
+  nyata (D-005 di proyek itu) diangkat ke kit. Mode workstream (id per jalur kerja) dicatat untuk dipertimbangkan.
+
 ## [0.3.0] — 2026-10-30
 ### Ditambahkan
 - **Jenis aplikasi `ui` / `data` / `api`** (`PROJECT.md` §2, `APP.md` §2): `QA.md` §2 dipecah per jenis — `data` menguji validasi

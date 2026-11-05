@@ -1,6 +1,7 @@
 ---
 handoff: H000
 peran: developer
+model: <model yang benar-benar mengerjakan, mis. claude-sonnet / deepseek-…>
 putaran: 1
 status: selesai           # selesai | sebagian | terhenti-butuh-keputusan
 branch: <branch>
@@ -39,5 +40,8 @@ tests: "<n> lulus / <n> gagal (<database>)"
 
 ### Catatan lingkungan
 -
+
+### Lanjutan untuk sesi berikutnya
+<!-- Hanya bila status: sebagian — apa yang selesai, yang belum, langkah pertama sesi baru. -->
 
 <!-- Putaran perbaikan: tambahkan "## Putaran 2 — YYYY-MM-DD" dengan judul bagian yang sama. -->

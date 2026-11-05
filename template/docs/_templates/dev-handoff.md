@@ -7,9 +7,10 @@ priority: P1              # P0 kritis | P1 kontrak inti | P2 pelengkap/mitra/pub
 created: YYYY-MM-DD HH:MM WIB
 closed: null
 author: Lead
-model: <kelas Opus|Sonnet|Haiku>
+tingkat: <tinggi|menengah|ringan>   # pemetaan ke model: PROJECT.md §2
 effort: <low|medium|high>
-model_reason: <satu kalimat: mengapa model/effort ini>
+model_reason: <satu kalimat: mengapa tingkat/effort ini>
+risiko: normal          # normal | tinggi (dana nyata, kunci/rahasia, data produksi, deploy → LEAD.md §2a)
 branch: h000-<slug>       # satu branch untuk dev, QA, dan semua putaran (docs/README.md §5)
 app: <app|[app1, app2]|shared>   # [multi-app] aplikasi yang tersentuh (docs/apps/)
 legacy_id: null   # [migrasi] id di docs-old (mis. H001.14, F-H001-19), bila item ini hasil migrasi

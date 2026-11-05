@@ -5,7 +5,7 @@ title: Rencana uji — <judul pekerjaan>
 status: ready             # ready | done
 created: YYYY-MM-DD HH:MM WIB
 author: Lead
-model: <kelas Opus|Sonnet>
+tingkat: <menengah|tinggi>   # sebaiknya model berbeda dari developer item ini
 effort: <medium|high>
 dev_handoff: H000
 app: <app|[app1, app2]|shared>   # [multi-app] aplikasi yang tersentuh (docs/apps/)

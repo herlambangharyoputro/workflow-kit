@@ -35,7 +35,7 @@ Dokumen kerja **Lead** untuk memindahkan alur kerja lama ke kaidah workflow-kit 
 8. **Dokumen bukan alur kerja** (bukti uji, instrumen, mockup, paket pengguna) → pindahkan ke folder kit yang sesuai
    (`publications/_bukti/`, `user-guides/`, `requirements/`, `uiux/`) dengan `git mv`.
 9. **Penutup.** Centang checklist §5, catat baris "Migrasi docs-old" di tabel Selesai `INDEX.md` dengan hash commit terakhir yang masih
-   memuat `docs-old/`, lalu hapus `docs-old/`, file ini, dan blok "Migrasi berjalan" di `CLAUDE.md` dalam satu commit.
+   memuat `docs-old/`, lalu hapus `docs-old/`, file ini, dan blok "Migrasi berjalan" di `AGENTS.md` dalam satu commit.
 
 ## 4. Peta id lama → nasib
 | Id lama | Jenis | Status lama | Nasib | Id baru / tempat |
@@ -49,4 +49,4 @@ Dokumen kerja **Lead** untuk memindahkan alur kerja lama ke kaidah workflow-kit 
 - [ ] Finding/asumsi terbuka dan decision berlaku sudah dipindah
 - [ ] Dokumen bukan alur kerja sudah dipindah
 - [ ] Tidak ada rujukan path `docs-old/` di `docs/` (kecuali file ini dan tabel Selesai)
-- [ ] `docs-old/`, file ini, dan blok "Migrasi berjalan" di `CLAUDE.md` dihapus
+- [ ] `docs-old/`, file ini, dan blok "Migrasi berjalan" di `AGENTS.md` dihapus

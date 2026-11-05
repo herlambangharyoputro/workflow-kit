@@ -6,10 +6,13 @@ Claude Code, dengan luaran publikasi bila ada. Lahir dan diuji di proyek SIMANTA
 ## Isi
 | Path | Isi |
 |---|---|
-| `template/` | berkas yang disalin ke root repo proyek: `CLAUDE.md` dan `docs/` (file peran, template, INDEX, PROJECT, ASUMSI, …) |
+| `template/` | berkas yang disalin ke root repo proyek: `AGENTS.md` (titik masuk semua agen), `CLAUDE.md` (mengimpor `AGENTS.md`), dan `docs/` |
 | `template-migrasi/` | tambahan untuk proyek dengan alur kerja lama: `docs/MIGRASI.md` dan decision `D-H000-02` |
 | `scripts/install.sh`, `scripts/install.ps1` | memasang `template/` ke repo proyek tanpa menimpa berkas yang sudah ada |
 | `scripts/new-worktree.sh`, `scripts/new-worktree.ps1` | menyiapkan worktree per item kerja untuk sesi paralel |
+| `scripts/check-docs.sh`, `scripts/check-docs.ps1` | pemeriksaan otomatis (frontmatter, id, status; per item: branch, file milik Lead, laporan & `model`, rahasia/berkas besar di diff) |
+
+Installer menyalin `check-docs` dan `new-worktree` ke `scripts/workflow/` di proyek, sehingga agen mana pun (lokal/cloud) bisa menjalankannya.
 | `VERSION`, `CHANGELOG.md` | versi kit |
 
 ## Konsep singkat
@@ -21,6 +24,15 @@ Claude Code, dengan luaran publikasi bila ada. Lahir dan diuji di proyek SIMANTA
 - **Laporan dev/QA dihapus saat item ditutup** setelah isinya diekstrak; riwayat lengkap tetap ada karena merge commit.
 - **Register asumsi** (`docs/requirements/ASUMSI.md`) untuk hal yang belum pasti dari mitra.
 - Peta lengkap: `template/docs/README.md`.
+
+## Netral terhadap model
+- `AGENTS.md` dibaca klien selain Claude Code (opencode, Codex, Cursor, …); `CLAUDE.md` hanya `@AGENTS.md`.
+- Rubrik `LEAD.md` memakai **tingkat** (tinggi/menengah/ringan); pemetaannya ke model nyata ditulis sekali di `PROJECT.md` §2.
+- Laporan dev/QA mencatat `model:` yang benar-benar mengerjakan; QA sebaiknya model berbeda dari developer.
+- Kepatuhan tidak bergantung pada model: `scripts/workflow/check-docs` menangkap pelanggaran yang paling sering.
+- **Sesi panjang**: Lead, Developer, dan QA wajib memberi tahu pemilik proyek dan serah terima ke sesi baru (`AGENTS.md`).
+- **Gerbang risiko** (`LEAD.md` §2a): item yang menyentuh dana nyata, kunci/rahasia, data produksi, atau deploy wajib decision,
+  simulasi/dry-run, canary, dan langkah nyata selalu dijalankan pemilik proyek.
 
 ## Jenis aplikasi
 Cara QA dan Definition of Done mengikuti jenis aplikasi yang dicatat di `PROJECT.md` §2 / `APP.md` §2:
@@ -80,10 +92,19 @@ Membuat `..\<repo>-h027` di branch dari frontmatter `branch:` dev handoff H027 (
 `origin/main`), lalu menyalin berkas di `.worktree-copy` (mis. `vendor`, `.env`). Satu folder = satu sesi.
 
 ## Memperbarui proyek ke versi kit baru
-Sesi Arsitek di proyek: baca `CHANGELOG.md` kit, terapkan perubahan ke file peran/template proyek, catat sebagai decision
-`D-H000-<nn>` (lihat `template/docs/ARSITEK.md`). Pelajaran dari proyek yang berlaku umum dibawa balik ke kit.
+Dengan working tree bersih:
+```powershell
+.\scripts\install.ps1 -Target D:\repo\proyek -Nama "Nama Proyek" -Repo owner/repo -Pemilik "Nama" -Upgrade
+```
+Hanya berkas generik kit yang ditimpa (`AGENTS.md`, `CLAUDE.md`, file peran, `docs/_templates/`, `scripts/workflow/`); berkas
+milik proyek (INDEX, PROJECT, APP, ASUMSI, handoff, finding, decision) tidak disentuh; mode multi-aplikasi dan migrasi yang masih
+berjalan dikenali otomatis; decision `D-H000-<nn>` upgrade dibuat. Tinjau `git diff`, lengkapi `PROJECT.md` bila CHANGELOG meminta
+bagian baru, lalu commit. Pelajaran dari proyek yang berlaku umum dibawa balik ke kit oleh sesi Arsitek.
 
 ## Status pengujian
+- `check-docs.sh`: diuji (data nyata SIMANTARA + kasus pelanggaran: status/nama file, branch, file milik Lead, rahasia, berkas besar,
+  token, laporan & `model`, pemeriksaan ref oleh Lead). `check-docs.ps1`: **belum diuji** di Windows.
+- `install.sh --upgrade`: diuji (0.3.0 → 0.4.0, mode multi & migrasi aktif, tree kotor ditolak). `install.ps1 -Upgrade`: **belum diuji**.
 - `new-worktree.sh`: diuji (branch baru & yang sudah ada di origin, salin `.worktree-copy`).
 - `install.sh`: diuji untuk mode satu/multi aplikasi, migrasi, deteksi alur lama, pemasangan ulang, dan template ber-CRLF.
 - `install.ps1`: diuji di Windows PowerShell 5.1 — deteksi alur kerja lama (GAGAL + saran `git mv`) dan mode multi + migrasi

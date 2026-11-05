@@ -18,6 +18,7 @@ Sesi yang mengubah alur kerja itu sendiri adalah **Arsitek** (`docs/ARSITEK.md`)
 | "H027 selesai QA" | review laporan QA (§4) → prompt perbaikan **atau** tutup handoff (§5) |
 | "status" | ringkas INDEX: sekarang, tertahan, perlu keputusan |
 | "mitra menjawab A-0nn" | perbarui ASUMSI.md, decision terkait, dan buat handoff perubahan bila perlu (§7) |
+| sesi sudah panjang (`AGENTS.md`) | tulis **Serah terima sesi Lead** di `INDEX.md`, commit, beri prompt pembuka sesi Lead baru |
 
 ## 2. Menulis dev handoff
 - Daftarkan baris di `INDEX.md` **dulu**, lalu tulis `dev-handoff/H<nnn>_<slug>_<ts>.md` dari
@@ -30,16 +31,30 @@ Sesi yang mengubah alur kerja itu sendiri adalah **Arsitek** (`docs/ARSITEK.md`)
 - Ukuran: selesai dalam satu sesi developer. Lebih besar → pecah menjadi beberapa `H` dengan `depends_on`.
 - Decision yang dibutuhkan ditulis `proposed`; gerbang ⏸ di checkpoint 1 menahan kode sampai di-`accept`.
 
-### Rubrik model & effort
-| Jenis pekerjaan | Model | Effort |
+### Rubrik tingkat model & effort
+Tingkat, bukan merek: pemetaan ke model nyata (Claude, DeepSeek, …) ada di `PROJECT.md` §2 dan cukup diubah di sana.
+
+| Jenis pekerjaan | Tingkat | Effort |
 |---|---|---|
-| Skema DB, otorisasi/izin, migrasi data, desain API komponen, keputusan ambigu | kelas Opus | high |
-| Model/pipeline NLP, perubahan kontrak data antar aplikasi, desain evaluasi (metrik, dataset uji) | kelas Opus | high |
-| Fitur/CRUD/UI yang mengikuti pola yang sudah ada | kelas Sonnet | medium |
-| Teks, panduan, seed demo, migrasi view mekanis ke komponen standar | kelas Haiku atau Sonnet | low |
-| QA biasa | kelas Sonnet | medium |
-| QA untuk otorisasi, migrasi data, rilis, atau evaluasi model/pipeline | kelas Opus | high |
-| Lead (brainstorming, review, menulis publikasi) | kelas Opus | high |
+| Skema DB, otorisasi/izin, migrasi data, desain API komponen, keputusan ambigu | tinggi | high |
+| Model/pipeline NLP, perubahan kontrak data antar aplikasi, desain evaluasi (metrik, dataset uji) | tinggi | high |
+| Apa pun ber-`risiko: tinggi` (§2a) | tinggi | high |
+| Fitur/CRUD/UI yang mengikuti pola yang sudah ada | menengah | medium |
+| Teks, panduan, seed demo, migrasi view mekanis ke komponen standar | ringan atau menengah | low |
+| QA biasa | menengah | medium |
+| QA untuk otorisasi, migrasi data, rilis, evaluasi model/pipeline, atau `risiko: tinggi` | tinggi | high |
+| Lead (brainstorming, review, menulis publikasi) | tinggi | high |
+
+QA sebaiknya memakai **model yang berbeda** dari developer item yang sama (titik buta berbeda) — sebutkan di prompt QA.
+
+## 2a. Gerbang risiko
+Item yang menyentuh **dana nyata, kunci/rahasia (wallet, API key produksi), data produksi, atau deploy ke produksi** diberi
+`risiko: tinggi` di frontmatter dev handoff. Untuk item itu:
+1. Ada decision `accepted` yang menyebut batasnya (jumlah dana maksimum, lingkungan, siapa menjalankan).
+2. Kriteria selesai memuat bukti **simulasi/dry-run** (testnet, `simulateTransaction`, staging, backup + uji restore) sebelum yang nyata.
+3. Langkah nyata pertama berupa **uji kecil** (canary) dengan batas yang ditulis di handoff; hasilnya dicatat sebelum skala penuh.
+4. Agen **tidak pernah** menjalankan langkah nyata sendiri: perintahnya diberikan ke pemilik proyek (berlabel lingkungan) untuk dijalankan.
+5. QA tingkat tinggi, dan Lead menutup hanya setelah pemilik proyek mengonfirmasi hasil canary.
 
 ## 3. Review laporan developer (`dev-reports/H<nnn>_report.md`)
 Baca laporan + diff branch item terhadap `main`, lalu pilah setiap butir:
@@ -67,6 +82,7 @@ Sebelum minta persetujuan merge, Lead memastikan:
 - **Yang diuji = yang di-merge:** sesudah `commit_diuji` di laporan QA, branch hanya menambah laporan, skrip QA, dan bukti
   (`git diff --stat <commit_diuji> origin/<branch>`); ada perubahan kode → QA ulang.
 - **Merge bersih:** simulasi `git merge-tree --write-tree origin/main origin/<branch>`; konflik → bereskan dulu atau sebut di laporan.
+- **Pemeriksaan otomatis:** `scripts/workflow/check-docs H<nnn>` di branch item lulus.
 
 Setelah pemilik proyek setuju, branch item di-merge ke `main` dengan merge commit (oleh pemilik proyek, atau oleh Lead atas
 persetujuannya). Lalu di `main`, satu commit penutupan:
@@ -78,21 +94,25 @@ persetujuannya). Lalu di `main`, satu commit penutupan:
 3. Tulis finding/decision/asumsi hasil review ke file masing-masing.
 4. Hapus `dev-reports/H<nnn>_report.md`, `qa-reports/H<nnn>_report.md`, dan `qa-reports/H<nnn>/`.
 5. Frontmatter: dev handoff `status: closed` + `closed:`; QA handoff `status: done`.
-6. Perbarui `INDEX.md` (status, Sekarang/Antre, id terpakai).
+6. Perbarui `INDEX.md` (status, Sekarang/Antre, id terpakai); jalankan `scripts/workflow/check-docs` (tanpa id) di `main`.
 7. Push ke `main`, sebutkan handoff berikutnya. Branch item boleh dihapus.
 
 ## 6. Format prompt
 Prompt hanya berisi penunjuk ke file — isi tetap di handoff, sehingga prompt tidak bisa basi.
 
 ````
-Model: <kelas Opus|Sonnet|Haiku> · Effort: <low|medium|high> · Repo: <repo dari docs/PROJECT.md>
+Tingkat: <tinggi|menengah|ringan> (= <model dari PROJECT.md §2>) · Effort: <low|medium|high> · Repo: <repo dari docs/PROJECT.md>
 Peran: <Developer|QA> untuk H<nnn> (putaran <n>)
 
 Baca docs/<DEVELOPER|QA>.md, lalu docs/<dev|qa>-handoff/H<nnn>_<slug>_<ts>.md.
 Branch: h<nnn>-<slug> (buat dari main bila belum ada; selalu git merge origin/main dulu). <Fokus putaran ini: …>
 <Bila sesi berjalan paralel: folder ../<repo>-h<nnn> (scripts/new-worktree), DB & port QA per item sesuai docs/PROJECT.md §4.>
-Tulis laporan di docs/<dev|qa>-reports/H<nnn>_report.md sesuai template, commit dengan awalan "H<nnn>:".
+Tulis laporan di docs/<dev|qa>-reports/H<nnn>_report.md sesuai template (isi field model:), jalankan
+scripts/workflow/check-docs H<nnn>, commit dengan awalan "H<nnn>:".
 ````
+
+Perintah yang dijalankan **pemilik proyek** (bukan agen) ditulis satu per blok dengan label lingkungan dari `PROJECT.md` §3,
+mis. `💻 LOKAL` atau `🖥️ VPS`, siap salin-tempel.
 
 ## 7. Asumsi (dua sumber)
 - **Dari developer** (tafsiran saat handoff tidak menjawab sesuatu): developer hanya boleh berasumsi untuk

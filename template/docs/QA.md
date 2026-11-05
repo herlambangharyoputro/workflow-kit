@@ -43,6 +43,9 @@ Satu handoff bisa menyentuh lebih dari satu jenis — uji semuanya.
 4. **Kontrak endpoint**: status code, bentuk respons, dan pesan error sesuai kontrak; input tidak valid ditolak dengan rapi.
 5. **Otorisasi**: endpoint terlindungi menolak tanpa kredensial/izin; data pengguna lain tidak bisa dibaca.
 
+**`risiko: tinggi`** (dana, kunci, data produksi, deploy): verifikasi bukti simulasi/dry-run dan rencana canary di handoff;
+QA tidak menjalankan langkah nyata. Sesi sudah panjang (`AGENTS.md`)? Tutup putaran dengan catatan lanjutan dan prompt sesi baru.
+
 ## 3. Bug
 Tulis di laporan dengan severity:
 - **kritis** — data rusak/hilang, celah otorisasi, halaman error 500 pada alur utama.
@@ -60,4 +63,5 @@ Bug yang terlihat di luar lingkup handoff tetap dicatat (bagian "Di luar lingkup
 - Saat `LULUS`: bukti **final** disimpan ke `docs/publications/_bukti/H<nnn>/` — screenshot `<halaman>_<lebar>.png`
   (mis. `pengguna-index_360.png`) untuk `ui`, dan `metrik.md` / `metrik.csv` (metrik dataset uji + baseline + commit) untuk `data`.
   Ini bahan panduan dan publikasi — tidak dihapus.
-- Isi `verdict` dan `commit_diuji` (commit kode yang diuji) di frontmatter laporan QA, commit dengan awalan `H<nnn>:`, push, lalu beri tahu pemilik proyek: "H<nnn> selesai QA".
+- Isi `verdict`, `commit_diuji` (commit kode yang diuji), dan `model` (model yang benar-benar menguji) di frontmatter laporan QA;
+  jalankan `scripts/workflow/check-docs H<nnn>`; commit dengan awalan `H<nnn>:`, push, lalu beri tahu pemilik proyek: "H<nnn> selesai QA".

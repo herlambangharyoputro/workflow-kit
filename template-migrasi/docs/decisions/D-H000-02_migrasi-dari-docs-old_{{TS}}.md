@@ -27,4 +27,4 @@ Repo ini sudah memakai alur kerja lama sebelum workflow-kit. Memasang kit di ata
 3. `docs-old/` dihapus saat checklist migrasi selesai; isinya tetap tersedia di riwayat git (hash dicatat di INDEX).
 
 ## Konsekuensi
-Selama migrasi, `docs-old/` hanya bahan bacaan Lead; `CLAUDE.md` memuat peringatan agar sesi lain tidak mengikuti aturannya.
+Selama migrasi, `docs-old/` hanya bahan bacaan Lead; `AGENTS.md` memuat peringatan agar sesi lain tidak mengikuti aturannya.

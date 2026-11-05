@@ -28,6 +28,8 @@ hal khusus tiap aplikasi ada di `apps/<app>/APP.md`.
 ## 2. Stack & konvensi kode
 - **Jenis & cara QA:** <!-- ui | data | api; cara uji khusus proyek ini --> (`QA.md` §2) <!-- [single-app] -->
 - **Jenis & cara QA:** per aplikasi di `apps/<app>/APP.md` §2 (`QA.md` §2) <!-- [multi-app] -->
+- **Pemetaan tingkat model** (rubrik `LEAD.md` §2): tinggi = <!-- mis. Claude Opus --> · menengah = <!-- mis. Claude Sonnet / DeepSeek … -->
+  · ringan = <!-- mis. Claude Haiku --> · klien yang dipakai: <!-- Claude Code, opencode, … -->
 - <!-- framework, bahasa, template UI -->
 - Konvensi kode & aturan domain: <!-- file, mis. SKILL.md -->
 - Pemakaian template UI: `uiux/STANDAR-UI.md`.
@@ -39,6 +41,8 @@ hal khusus tiap aplikasi ada di `apps/<app>/APP.md`.
 | Lokal | <!-- OS, DB kerja, DB test --> |
 | Demo / staging | <!-- --> |
 | Produksi | <!-- --> |
+
+**Label perintah untuk pemilik proyek:** `💻 LOKAL` (laptop) · `🖥️ VPS` / `☁️ SERVER` (sesuaikan) — dipakai di setiap blok perintah.
 
 ## 4. Perintah
 | Tujuan | Perintah |

@@ -13,6 +13,7 @@ Alur kerja: **workflow-kit {{VERSI_KIT}}** (adopsi: D-H000-01). File peran (`LEA
 | Developer | `DEVELOPER.md` → `PROJECT.md` → `dev-handoff/H<nnn>_*.md` yang disebut di prompt |
 | QA | `QA.md` → `PROJECT.md` → `qa-handoff/H<nnn>_*.md` yang disebut di prompt |
 | Arsitek (mengubah alur kerja) | `ARSITEK.md` → file ini |
+| Agen selain Claude Code | `AGENTS.md` di root repo (titik masuk semua agen; `CLAUDE.md` hanya mengimpornya) |
 | Ingin tahu status | `INDEX.md` |
 
 ## 2. Folder
@@ -79,5 +80,7 @@ Alur kerja: **workflow-kit {{VERSI_KIT}}** (adopsi: D-H000-01). File peran (`LEA
 - **Penutupan:** branch item di-merge ke `main` dengan **merge commit, bukan squash** (laporan yang dihapus tetap ada di
   riwayat), lalu Lead membuat satu commit penutupan di `main` (`LEAD.md` §5).
 - **Sesi paralel:** satu folder repo = satu sesi. Sesi yang berjalan bersamaan memakai worktree sendiri
-  (`scripts/new-worktree` dari workflow-kit) dengan DB dan port QA sendiri (`PROJECT.md` §4).
+  (`scripts/workflow/new-worktree`) dengan DB dan port QA sendiri (`PROJECT.md` §4).
 - Perubahan alur kerja dikerjakan sesi **Arsitek** lewat PR (`ARSITEK.md`).
+- **Pemeriksaan otomatis:** `scripts/workflow/check-docs` (frontmatter, id, status; dengan id item: branch, file milik Lead,
+  laporan & field `model`, berkas rahasia/besar di diff). Developer/QA menjalankannya sebelum melapor; Lead sebelum merge dan setelah menutup.

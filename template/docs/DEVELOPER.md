@@ -14,7 +14,8 @@ lalu menulis laporan untuk Lead. Perintah, lingkungan, database yang didukung, d
 
 ## 2. Selama bekerja
 - **Berhenti ⏸ dan tanya** bila handoff tidak menjawab sesuatu yang menyentuh skema DB, izin/peran, alur status,
-  lingkup, atau data riil. **Boleh berasumsi** hanya untuk hal kecil yang mudah dibalik (label, urutan kolom,
+  lingkup, atau data riil. Item `risiko: tinggi`: ikuti gerbang risiko (`LEAD.md` §2a) — jangan pernah menjalankan langkah
+  nyata (dana, kunci produksi, deploy) sendiri; tulis perintahnya untuk pemilik proyek. **Boleh berasumsi** hanya untuk hal kecil yang mudah dibalik (label, urutan kolom,
   nilai default di config) — dan setiap asumsi wajib ditulis di laporan.
 - Menemukan masalah di luar lingkup? Jangan diperbaiki diam-diam: tulis sebagai **draf temuan** di laporan.
   Lead yang memutuskan apakah jadi finding.
@@ -33,10 +34,14 @@ lalu menulis laporan untuk Lead. Perintah, lingkungan, database yang didukung, d
 6. Aplikasi `data`: keluaran sesuai kontrak; perubahan kontrak memperbarui berkas kontrak **dan** test konsumennya dalam
    handoff yang sama; metrik dataset uji dilaporkan (sebelum/sesudah) di laporan; data RAW/besar tidak di-commit.
 7. Tidak ada perubahan di luar lingkup, rahasia, atau file sementara yang ikut ter-commit.
-8. Laporan `docs/dev-reports/H<nnn>_report.md` ditulis, di-commit, dan branch di-push (push pertama: `git push -u origin <branch>` —
+8. `scripts/workflow/check-docs H<nnn>` lulus. Laporan `docs/dev-reports/H<nnn>_report.md` (field `model:` = model yang benar-benar
+   mengerjakan) ditulis, di-commit, dan branch di-push (push pertama: `git push -u origin <branch>` —
    branch item tidak boleh mengikuti `origin/main`).
 
 ## 4. Laporan
+Sesi sudah panjang (`AGENTS.md`)? Tutup putaran dengan `status: sebagian` dan bagian "Lanjutan untuk sesi berikutnya", lalu beri
+pemilik proyek prompt pembuka sesi Developer baru.
+
 Tulis `docs/dev-reports/H<nnn>_report.md` dari `docs/_templates/dev-report.md`. Ringkas: detail teknis panjang
 (daftar file, alasan implementasi) masuk ke **deskripsi PR**, bukan laporan. Putaran perbaikan dari QA
 ditambahkan sebagai bagian "Putaran n" di file yang sama — jangan membuat file baru.

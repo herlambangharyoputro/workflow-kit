@@ -27,6 +27,10 @@
 | Id | Task | Prio | Depends on | Catatan |
 |---|---|---|---|---|
 
+## Serah terima sesi Lead
+<!-- Ditimpa setiap kali sesi Lead berpindah (AGENTS.md "Sesi panjang"): tanggal, yang sedang dikerjakan, langkah pertama sesi baru. -->
+—
+
 ## Perlu keputusan pemilik proyek
 -
 
