@@ -3,7 +3,7 @@
 Semua catatan kerja proyek tinggal di sini sebagai file Markdown. Temuan, keputusan, dan asumsi
 **tidak cukup disebut di chat** — kalau belum ada filenya, ia belum tercatat.
 
-Alur kerja: **workflow-kit {{VERSI_KIT}}** (adopsi: D-H000-01). File peran (`LEAD.md`, `DEVELOPER.md`, `QA.md`, `ARSITEK.md`),
+Alur kerja: **workflow-kit {{VERSI_KIT}}** (adopsi & upgrade: decision `D-H000-*` di `decisions/`). File peran (`LEAD.md`, `DEVELOPER.md`, `QA.md`, `ARSITEK.md`),
 `_templates/`, dan aturan di file ini generik; semua hal khusus proyek ada di `PROJECT.md`<!-- [multi-app] --> dan `apps/<app>/APP.md`<!-- [/multi-app] -->.
 
 ## 1. Mulai dari mana

@@ -11,4 +11,4 @@ Repo ini adalah **kit alur kerja**, bukan proyek aplikasi. Sesi yang bekerja di 
   penanda/placeholder (`grep -rn "\[multi-app\]\|\[migrasi\]\|{{"`), dan sesuaikan `install.ps1`/`new-worktree.ps1` secara setara.
 - Skrip `.ps1` hanya berisi karakter ASCII (Windows PowerShell 5.1 membaca skrip tanpa BOM sebagai ANSI).
 - Template berisi `AGENTS.md` (aturan semua agen) dan `CLAUDE.md` tipis (`@AGENTS.md`); aturan baru masuk `AGENTS.md`.
-- Naikkan `VERSION` dan tulis `CHANGELOG.md` untuk setiap rilis. Bahasa Indonesia untuk dokumen dan commit.
+- Naikkan `VERSION`, tulis `CHANGELOG.md`, dan beri tag git `v<versi>` (push tag) untuk setiap rilis. Bahasa Indonesia untuk dokumen dan commit.

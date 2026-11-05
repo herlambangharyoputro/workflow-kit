@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.2] — 2026-11-05
+### Diperbaiki
+- `docs/README.md` template tidak lagi menulis "adopsi: D-H000-01" (salah untuk repo `--adopsi`, mis. SIMANTARA = D-H000-04).
+### Ditambahkan
+- Tag git `v0.1.0`…`v0.4.2` untuk setiap rilis; rilis berikutnya selalu diberi tag.
+
 ## [0.4.1] — 2026-11-05
 ### Ditambahkan
 - **`--adopsi` / `-Adopsi`**: untuk repo yang struktur `docs/`-nya sudah seperti kit tetapi tidak dipasang lewat installer
