@@ -49,6 +49,8 @@ foreach ($dir in $folders.Keys) {
 }
 $ph = Get-ChildItem docs -Recurse -File -Filter *.md -ErrorAction SilentlyContinue | Select-String -Pattern '\{\{[A-Z_]*\}\}' -List
 if ($ph) { W ("placeholder {{...}} tersisa: " + (($ph | ForEach-Object { $_.Path.Substring($root.Length + 1) }) -join ' ')) }
+$idx = Join-Path $root 'docs/INDEX.md'
+if (Test-Path $idx) { $sz = (Get-Item $idx).Length; if ($sz -gt 12000) { W "docs/INDEX.md $sz byte (> 12000): pindahkan baris Selesai lama, finding resolved, decision superseded ke docs/INDEX-arsip.md (LEAD.md 5)" } }
 
 # --- 2. Item ------------------------------------------------------------------------------------------------------
 if ($Id) {

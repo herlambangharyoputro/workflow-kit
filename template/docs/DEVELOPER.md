@@ -45,7 +45,8 @@ pemilik proyek prompt pembuka sesi Developer baru.
 Tulis `docs/dev-reports/H<nnn>_report.md` dari `docs/_templates/dev-report.md`. Ringkas: detail teknis panjang
 (daftar file, alasan implementasi) masuk ke **deskripsi PR**, bukan laporan. Putaran perbaikan dari QA
 ditambahkan sebagai bagian "Putaran n" di file yang sama — jangan membuat file baru.
-Setelah itu, beri tahu pemilik proyek: "H<nnn> selesai dev".
+Setelah itu, beri tahu pemilik proyek secara ringkas: "H<nnn> selesai dev" — lalu **sesi ini selesai**. Jangan menerima
+handoff berikutnya di sesi yang sama (`AGENTS.md` "Batas sesi"); putaran perbaikan untuk H<nnn> boleh lanjut di sini selama sesi masih pendek.
 
 ## 5. Lingkungan
 Perintah test, catatan container cloud, dan lingkungan lokal: `docs/PROJECT.md` §3–§4. Kendala lingkungan baru

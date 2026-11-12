@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.5.0] — 2026-11-12
+### Ditambahkan
+- **Batas sesi** (`AGENTS.md`): Developer dan QA **satu handoff = satu sesi** (putaran perbaikan handoff yang sama boleh lanjut);
+  Lead beberapa handoff per sesi, sesi baru setelah ±2–3 handoff ditutup; model & effort dipilih sebelum pesan pertama dan tidak
+  diganti di tengah sesi (cache konteks hilang); prompt Lead ditempel apa adanya.
+- **Hemat token** (`AGENTS.md`): baca per bagian, test ringkas (yang gagal saja), diff mulai `--stat`, log/data tidak ditampilkan
+  utuh, screenshot tidak dibuka ulang; pemilik proyek cukup meneruskan pemicu "H<nnn> selesai dev/QA" ke Lead.
+- **`docs/INDEX-arsip.md`**: tabel Selesai di INDEX hanya 10 baris terakhir; baris lama, finding `resolved`, decision `superseded`
+  dipindah ke arsip (tidak wajib dibaca). `check-docs` memberi peringatan bila `INDEX.md` > 12000 byte.
+### Diubah
+- Review Lead bertahap: `git diff --stat` dulu, diff penuh hanya untuk file berisiko (`LEAD.md` §3).
+- Serah terima Lead ≤ 10 baris, "Lanjutan untuk sesi berikutnya" ≤ 8 baris; prompt pembuka hanya penunjuk file.
+- `DEVELOPER.md` §4 dan `QA.md` §4: sesi berhenti setelah melapor; template prompt §6 diberi "Sesi ini hanya untuk H<nnn>".
+### Pelajaran
+- Pola satu sesi Developer/QA untuk 5 handoff berturut-turut dengan ganti model di tengah sesi: konteks handoff lama terkirim ulang
+  di setiap giliran dan cache hilang tiap ganti model — jauh lebih mahal daripada ±1,5 rb token membaca ulang file peran di sesi baru,
+  dan QA kehilangan independensi.
+
 ## [0.4.2] — 2026-11-05
 ### Diperbaiki
 - `docs/README.md` template tidak lagi menulis "adopsi: D-H000-01" (salah untuk repo `--adopsi`, mis. SIMANTARA = D-H000-04).

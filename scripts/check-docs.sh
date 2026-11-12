@@ -40,6 +40,11 @@ cek_folder docs/findings "open confirmed resolved superseded"
 cek_folder docs/decisions "proposed accepted provisional superseded"
 if grep -rln '{{[A-Z_]*}}' docs --include=*.md >/dev/null 2>&1; then W "placeholder {{…}} tersisa: $(grep -rln '{{[A-Z_]*}}' docs --include=*.md | tr '\n' ' ')"; fi
 
+if [ -f docs/INDEX.md ]; then
+  sz="$(wc -c < docs/INDEX.md | tr -d ' ')"
+  [ "$sz" -le 12000 ] || W "docs/INDEX.md $sz byte (> 12000): pindahkan baris Selesai lama, finding resolved, decision superseded ke docs/INDEX-arsip.md (LEAD.md §5)"
+fi
+
 # --- 2. Item --------------------------------------------------------------------------------------------------------
 if [ -n "$ID" ]; then
   [[ "$ID" =~ ^H?[0-9]{3}$ ]] || { echo "Id tidak valid: $ID"; exit 1; }

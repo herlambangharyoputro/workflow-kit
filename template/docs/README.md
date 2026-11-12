@@ -14,7 +14,7 @@ Alur kerja: **workflow-kit {{VERSI_KIT}}** (adopsi & upgrade: decision `D-H000-*
 | QA | `QA.md` → `PROJECT.md` → `qa-handoff/H<nnn>_*.md` yang disebut di prompt |
 | Arsitek (mengubah alur kerja) | `ARSITEK.md` → file ini |
 | Agen selain Claude Code | `AGENTS.md` di root repo (titik masuk semua agen; `CLAUDE.md` hanya mengimpornya) |
-| Ingin tahu status | `INDEX.md` |
+| Ingin tahu status | `INDEX.md` (item lama yang sudah ditutup: `INDEX-arsip.md`, tidak wajib dibaca) |
 
 ## 2. Folder
 | Folder | Isi | Penulis | Saat handoff `closed` |

@@ -28,7 +28,7 @@
 |---|---|---|---|---|
 
 ## Serah terima sesi Lead
-<!-- Ditimpa setiap kali sesi Lead berpindah (AGENTS.md "Sesi panjang"): tanggal, yang sedang dikerjakan, langkah pertama sesi baru. -->
+<!-- Ditimpa setiap kali sesi Lead berpindah (AGENTS.md "Sesi panjang"), ≤ 10 baris: tanggal, yang sedang dikerjakan, langkah pertama sesi baru. -->
 —
 
 ## Perlu keputusan pemilik proyek
@@ -45,5 +45,6 @@
 | D-H000-02 | Migrasi alur kerja lama (`docs-old/`) ke workflow-kit | accepted | <!-- [migrasi] -->
 
 ## Selesai (`closed`)
+<!-- Hanya 10 baris terakhir; yang lebih lama dipindah ke INDEX-arsip.md (LEAD.md §5). -->
 | Id | Task | Catatan penutupan |
 |---|---|---|

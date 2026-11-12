@@ -8,6 +8,7 @@ Sesi yang mengubah alur kerja itu sendiri adalah **Arsitek** (`docs/ARSITEK.md`)
 
 ## 1. Awal setiap sesi
 1. Baca `docs/PROJECT.md` (sekali per sesi; proyek multi-aplikasi: juga `docs/apps/<app>/APP.md` yang relevan), `docs/INDEX.md` dan baris `terbuka`/`asumsi` di `docs/requirements/ASUMSI.md` yang relevan.
+   Ada isi di **Serah terima sesi Lead**? Mulai dari langkah pertama yang ditulis di sana. `INDEX-arsip.md` tidak dibaca kecuali perlu.
 2. `git pull` di `main`; lihat branch item yang sedang berjalan (kolom Branch di `INDEX.md`).
 3. Jawab sesuai perintah pemilik proyek:
 
@@ -18,7 +19,10 @@ Sesi yang mengubah alur kerja itu sendiri adalah **Arsitek** (`docs/ARSITEK.md`)
 | "H027 selesai QA" | review laporan QA (§4) → prompt perbaikan **atau** tutup handoff (§5) |
 | "status" | ringkas INDEX: sekarang, tertahan, perlu keputusan |
 | "mitra menjawab A-0nn" | perbarui ASUMSI.md, decision terkait, dan buat handoff perubahan bila perlu (§7) |
-| sesi sudah panjang (`AGENTS.md`) | tulis **Serah terima sesi Lead** di `INDEX.md`, commit, beri prompt pembuka sesi Lead baru |
+| sesi sudah panjang / ±2–3 handoff ditutup (`AGENTS.md`) | tulis **Serah terima sesi Lead** di `INDEX.md`, commit, beri prompt pembuka sesi Lead baru |
+
+Pemicu dari pemilik proyek cukup id + kejadian ("H027 selesai dev"); bila jawaban sesi Developer/QA ikut ditempel, abaikan dan
+baca file laporannya.
 
 ## 2. Menulis dev handoff
 - Daftarkan baris di `INDEX.md` **dulu**, lalu tulis `dev-handoff/H<nnn>_<slug>_<ts>.md` dari
@@ -57,7 +61,8 @@ Item yang menyentuh **dana nyata, kunci/rahasia (wallet, API key produksi), data
 5. QA tingkat tinggi, dan Lead menutup hanya setelah pemilik proyek mengonfirmasi hasil canary.
 
 ## 3. Review laporan developer (`dev-reports/H<nnn>_report.md`)
-Baca laporan + diff branch item terhadap `main`, lalu pilah setiap butir:
+Baca laporan + diff branch item terhadap `main` secara bertahap: `git diff --stat main...origin/<branch>` dulu, lalu diff penuh
+hanya untuk file berisiko (skema/migrasi, izin/otorisasi, kontrak, konfigurasi) dan file yang disebut di asumsi/temuan. Lalu pilah setiap butir:
 - **Asumsi pengerjaan** → benar: catat di "Hasil" handoff saat menutup · butuh konfirmasi pemilik proyek/mitra:
   tambahkan baris `A-…` di ASUMSI.md · salah: masukkan ke prompt perbaikan.
 - **Draf temuan** → dalam lingkup: diperbaiki di handoff ini · di luar lingkup / lintas handoff: tulis
@@ -94,11 +99,14 @@ persetujuannya). Lalu di `main`, satu commit penutupan:
 3. Tulis finding/decision/asumsi hasil review ke file masing-masing.
 4. Hapus `dev-reports/H<nnn>_report.md`, `qa-reports/H<nnn>_report.md`, dan `qa-reports/H<nnn>/`.
 5. Frontmatter: dev handoff `status: closed` + `closed:`; QA handoff `status: done`.
-6. Perbarui `INDEX.md` (status, Sekarang/Antre, id terpakai); jalankan `scripts/workflow/check-docs` (tanpa id) di `main`.
+6. Perbarui `INDEX.md` (status, Sekarang/Antre, id terpakai). Tabel **Selesai** hanya menyimpan 10 baris terakhir; baris lebih
+   lama, finding `resolved`, dan decision `superseded` dipindah ke `INDEX-arsip.md`. Jalankan `scripts/workflow/check-docs` (tanpa id) di `main`.
 7. Push ke `main`, sebutkan handoff berikutnya. Branch item boleh dihapus.
 
 ## 6. Format prompt
-Prompt hanya berisi penunjuk ke file — isi tetap di handoff, sehingga prompt tidak bisa basi.
+Prompt hanya berisi penunjuk ke file — isi tetap di handoff, sehingga prompt tidak bisa basi. Setiap prompt Developer/QA untuk
+**sesi baru** (satu handoff = satu sesi, `AGENTS.md`); ingatkan pemilik proyek memilih model/effort sebelum menempelnya.
+Prompt putaran perbaikan boleh ditempel di sesi developer yang sama bila sesi itu masih pendek.
 
 ````
 Tingkat: <tinggi|menengah|ringan> (= <model dari PROJECT.md §2>) · Effort: <low|medium|high> · Repo: <repo dari docs/PROJECT.md>
@@ -108,7 +116,7 @@ Baca docs/<DEVELOPER|QA>.md, lalu docs/<dev|qa>-handoff/H<nnn>_<slug>_<ts>.md.
 Branch: h<nnn>-<slug> (buat dari main bila belum ada; selalu git merge origin/main dulu). <Fokus putaran ini: …>
 <Bila sesi berjalan paralel: folder ../<repo>-h<nnn> (scripts/new-worktree), DB & port QA per item sesuai docs/PROJECT.md §4.>
 Tulis laporan di docs/<dev|qa>-reports/H<nnn>_report.md sesuai template (isi field model:), jalankan
-scripts/workflow/check-docs H<nnn>, commit dengan awalan "H<nnn>:".
+scripts/workflow/check-docs H<nnn>, commit dengan awalan "H<nnn>:". Sesi ini hanya untuk H<nnn>.
 ````
 
 Perintah yang dijalankan **pemilik proyek** (bukan agen) ditulis satu per blok dengan label lingkungan dari `PROJECT.md` §3,

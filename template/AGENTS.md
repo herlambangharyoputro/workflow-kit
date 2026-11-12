@@ -27,19 +27,39 @@ yang berlaku**. Jangan ikuti `LEAD.md`, `INDEX.md`, atau `README.md` di dalamnya
 Tanpa peran (permintaan biasa): kerjakan dengan konvensi di `docs/PROJECT.md` §2, dan jangan mengubah `docs/INDEX.md`,
 `docs/findings/`, `docs/decisions/`, atau `docs/requirements/ASUMSI.md` kecuali diminta.
 
+## Batas sesi
+Semua yang perlu diketahui ada di file, bukan di riwayat chat — sesi baru tidak perlu membaca percakapan lama. Setiap giliran
+mengirim ulang seluruh konteks sesi, jadi sesi pendek lebih murah dan lebih teliti daripada sesi panjang.
+- **Developer dan QA: satu handoff = satu sesi.** Setelah melapor "H<nnn> selesai dev/QA", sesi berhenti; handoff berikutnya
+  dikerjakan di sesi baru (tab baru atau `/clear`), walau untuk peran yang sama. Putaran perbaikan untuk handoff yang **sama**
+  boleh lanjut di sesi itu selama konteksnya masih pendek.
+- **Lead: beberapa handoff per sesi**, sesi baru setelah ±2–3 handoff ditutup.
+- **Model dan effort dipilih sebelum pesan pertama** dan tidak diganti di tengah sesi (ganti model = cache konteks hilang dan
+  seluruh konteks diproses ulang dengan harga penuh). Butuh model lain → sesi baru.
+- Prompt dari Lead ditempel **apa adanya**, termasuk baris "Baca docs/<PERAN>.md".
+
+## Hemat token
+- Baca bagian yang perlu (`grep -n`, rentang baris, § yang dirujuk), bukan seluruh file; jangan membaca ulang file yang sudah dibaca di sesi ini.
+- Test: jalankan dengan output ringkas dan tampilkan yang gagal saja (mode quiet, `| tail -n 40`); output penuh hanya untuk test yang diselidiki.
+- Diff: mulai dari `git diff --stat`, lalu buka file yang relevan saja. Log, dump DB, dan file data tidak ditampilkan utuh (`head`, `tail`, `grep`, hitungan).
+- Screenshot disimpan sebagai bukti, tidak dibuka ulang kecuali untuk memeriksa bug tertentu.
+- Lapor ke pemilik proyek secara ringkas; isi lengkap ada di file laporan. Pemilik proyek cukup meneruskan pemicu ke Lead
+  ("H<nnn> selesai dev"), tidak menempel jawaban sesi Developer/QA.
+
 ## Sesi panjang — wajib serah terima
 Sesi yang terlalu panjang mulai lupa keputusan awal dan mengulang pekerjaan. **Lead, Developer, dan QA wajib memberi tahu
 pemilik proyek dan menyerahkan pekerjaan ke sesi baru** bila salah satu tanda ini muncul:
 - klien memadatkan/meringkas konteks (mis. pesan *context compacted*, *summarized*), atau konteks terasa hampir penuh;
 - Anda membaca ulang berkas yang sudah dibaca, atau ragu tentang keputusan yang dibuat di awal sesi;
-- Lead sudah menyelesaikan ±3 siklus review/penutupan; Developer/QA sudah ±2 putaran dalam satu sesi;
+- batas sesi di atas tercapai (Lead ±2–3 handoff ditutup; Developer/QA: handoff berikutnya, atau putaran perbaikan ke-3 di sesi yang sama);
 - pemilik proyek meminta.
 
 Cara serah terima (di titik aman — jangan di tengah suntingan):
 1. Commit semua yang sudah jadi; tidak ada perubahan yang belum di-commit.
-2. Tulis catatan serah terima: Lead → bagian **Serah terima sesi Lead** di `docs/INDEX.md`; Developer/QA → bagian putaran di
-   laporan dengan `status: sebagian` + "Lanjutan untuk sesi berikutnya" (apa yang selesai, yang belum, langkah pertama).
-3. Beri pemilik proyek **prompt pembuka sesi baru** yang siap tempel (peran, file yang dibaca, langkah pertama).
+2. Tulis catatan serah terima: Lead → bagian **Serah terima sesi Lead** di `docs/INDEX.md` (≤ 10 baris, ditimpa);
+   Developer/QA (pekerjaan belum selesai) → bagian putaran di laporan dengan `status: sebagian` + "Lanjutan untuk sesi
+   berikutnya" (≤ 8 baris: apa yang selesai, yang belum, langkah pertama). Rujuk file/commit, jangan salin isinya.
+3. Beri pemilik proyek **prompt pembuka sesi baru** yang siap tempel (peran, file yang dibaca, langkah pertama) — hanya penunjuk ke file.
 
 ## Aturan yang selalu berlaku
 - Bahasa Indonesia untuk dokumen dan commit; commit untuk item kerja diawali `H<nnn>:`.

@@ -64,4 +64,6 @@ Bug yang terlihat di luar lingkup handoff tetap dicatat (bagian "Di luar lingkup
   (mis. `pengguna-index_360.png`) untuk `ui`, dan `metrik.md` / `metrik.csv` (metrik dataset uji + baseline + commit) untuk `data`.
   Ini bahan panduan dan publikasi — tidak dihapus.
 - Isi `verdict`, `commit_diuji` (commit kode yang diuji), dan `model` (model yang benar-benar menguji) di frontmatter laporan QA;
-  jalankan `scripts/workflow/check-docs H<nnn>`; commit dengan awalan `H<nnn>:`, push, lalu beri tahu pemilik proyek: "H<nnn> selesai QA".
+  jalankan `scripts/workflow/check-docs H<nnn>`; commit dengan awalan `H<nnn>:`, push, lalu beri tahu pemilik proyek secara ringkas: "H<nnn> selesai QA".
+- Setelah itu **sesi ini selesai**: QA handoff berikutnya dikerjakan di sesi baru (`AGENTS.md` "Batas sesi") supaya pengujian tetap
+  independen dari handoff sebelumnya. Putaran ulang untuk H<nnn> boleh di sesi yang sama selama sesi masih pendek.
