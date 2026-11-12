@@ -142,7 +142,7 @@ foreach ($sk in 'check-docs.sh', 'check-docs.ps1', 'new-worktree.sh', 'new-workt
 }
 if ($Upgrade) {
   $nums = @(Get-ChildItem (Join-Path $Target 'docs\decisions') -Filter 'D-H000-*_*' -File | ForEach-Object { if ($_.Name -match '^D-H000-(\d+)_') { [int]$Matches[1] } })
-  $nn = '{0:D2}' -f ((($nums | Measure-Object -Maximum).Maximum) + 1)
+  $nn = '{0:D2}' -f ([int](($nums | Measure-Object -Maximum).Maximum) + 1)
   $lv = if ($VersiLama) { $VersiLama } else { '?' }
   if ($Adopsi) {
     $dst = Join-Path $Target "docs\decisions\D-H000-${nn}_adopsi-workflow-kit_${Ts}.md"

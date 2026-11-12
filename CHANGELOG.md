@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1] — 2026-11-12
+### Diperbaiki
+- `install.ps1` `-Upgrade`/`-Adopsi`: nomor decision dihitung dari `Measure-Object` (bertipe double) sehingga format `{0:D2}`
+  gagal di Windows PowerShell 5.1 pada langkah terakhir (decision tidak dibuat). Kini dikonversi ke `[int]` dulu.
+  Ditemukan saat adopsi SIMANTARA.
+
 ## [0.5.0] — 2026-11-12
 ### Ditambahkan
 - **Batas sesi** (`AGENTS.md`): Developer dan QA **satu handoff = satu sesi** (putaran perbaikan handoff yang sama boleh lanjut);
